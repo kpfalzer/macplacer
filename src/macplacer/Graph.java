@@ -25,18 +25,81 @@
  *************************************************************************
  */
 package macplacer;
+import	java.util.LinkedList;
+import	java.util.Collection;
 
 /**
- *
+ * Undirected graph of nodes<N> and edges<E>.
  * @author karl
  */
-public class MacroRef {
-	public MacroRef(String name, double height, double width) {
-		m_refName = name;
-		m_height  = height;
-		m_width	  = width;
+public class Graph<N,E> {
+	public Graph() {}
+
+	public void addEdge(E edge, N val1, N val2) {
+		Node nodes[] = {new Node<N>(val1), new Node<N>(val2)};
+		Edge nedge = new Edge<N,E>(edge, nodes);
+		m_edges.add(nedge);
 	}
 
-	private	final String	m_refName;
-	private final double	m_height, m_width;
+	public Collection<Edge<N,E>> getEdges() {
+		return m_edges;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder buf = new StringBuilder(this.getClass().getName()+":\n");
+		for (Edge<N,E> edge : m_edges) {
+			buf.append(edge.toString()).append('\n');
+		}
+		return buf.toString();
+	}
+
+	private LinkedList<Edge<N,E>>	m_edges = new LinkedList<Edge<N,E>>();
+
+	public static class Node<N> {
+		public Node(N val) {
+			m_val = val;
+		}
+		public N getVal() {
+			return m_val;
+		}
+		@Override
+		public String toString() {
+			return m_val.toString();
+		}
+
+		private N	m_val;
+	}
+	public static class Edge<N,E> {
+		public Edge(E edgeVal, Node<N> n1, Node<N> n2) {
+			m_edgeValue = edgeVal;
+			m_nodes[0] = n1;
+			m_nodes[1] = n2;
+		}
+		public Edge(E edgeVal, Node<N>[] nodes) {
+			this(edgeVal, nodes[0], nodes[1]);
+		}
+		public Edge(Node<N> n1, Node<N> n2) {
+			this(null,n1,n2);
+		}
+		public void setEdgeValue(E edgeVal) {
+			m_edgeValue = edgeVal;
+		}
+		public E getEdgeValue() {
+			return m_edgeValue;
+		}
+		public Node<N>[] getNodes() {
+			return m_nodes;
+		}
+		@Override
+		public String toString() {
+			StringBuilder buf = new StringBuilder("Edge val: ");
+			buf.append(m_edgeValue.toString()).append(". Nodes: ");
+			buf.append(m_nodes[0].toString()).append(" : ").append(m_nodes[1].toString());
+			return buf.toString();
+		}
+
+		private	E		m_edgeValue;
+		private Node	m_nodes[] = {null,null};
+	}
 }

@@ -25,30 +25,42 @@
  *************************************************************************
  */
 package macplacer;
+import	org.xml.sax.Attributes;
 
 /**
- *
+ * Library cell object.
  * @author karl
  */
-public class Instance {
-	public Instance(String instName, LibCell ref) {
-		m_name = instName;
-		m_ref  = ref;
+public class LibCell {
+	public LibCell(String name, double height, double width) {
+		m_refName = name;
+		m_height  = height;
+		m_width	  = width;
+		m_rotate  = null;
+	}
+	public LibCell(Attributes atts) {
+		m_refName = atts.getValue("name");
+		m_height  = Double.parseDouble(atts.getValue("height"));
+		m_width	  = Double.parseDouble(atts.getValue("width"));
+		m_rotate  = atts.getValue("rotate");
 	}
 
 	public String getName() {
-		return m_name;
+		return m_refName;
 	}
 
-	public LibCell getLibCell() {
-		return m_ref;
+	public String getRotate() {
+		return m_rotate;
 	}
 
-	@Override
-	public String toString() {
-		return m_name;
+	public double getWidth() {
+		return m_width;
+	}
+
+	public double getHeight() {
+		return m_height;
 	}
 	
-	private final String	m_name;
-	private final LibCell	m_ref;
+	private	final String	m_refName, m_rotate;
+	private final double	m_height, m_width;
 }
