@@ -30,6 +30,8 @@ import  java.io.IOException;
 import	java.io.FileInputStream;
 import	java.util.HashMap;
 import	java.util.ArrayList;
+import	java.util.List;
+import	java.util.Comparator;
 import	org.xml.sax.Attributes;
 import	org.xml.sax.SAXException;
 import  org.xml.sax.XMLReader;
@@ -49,23 +51,29 @@ public class Design {
 		rdr.setContentHandler(new MyContentHandler());
 		rdr.parse(new InputSource(fis));
 		fis.close();
-		m_instances.trimToSize();
 	}
 
 	public static void main(String argv[]) {
 		try {
 			Design des = new Design(argv[0]);
-			Graph g = Util.measureCommonPrefix(des.m_instances, stHierSep);
-			System.out.println(g.toString());
+			new DefaultAlgorithm().getClusters(des);
 		} catch (Exception ex) {
 			error(ex);
 		}
 	}
 
+	public List<Instance> getInstances() {
+		return m_instances;
+	}
+
+	private void initialize() {
+		((ArrayList)m_instances).trimToSize();
+	}
+
 	private HashMap<String,LibCell>	m_libCellsByName = new HashMap<String, LibCell>();
-	private ArrayList<Instance>		m_instances = new ArrayList<Instance>(100);
+	private List<Instance>			m_instances = new ArrayList<Instance>(100);
 	private String					m_designName;
-	private final static String		stHierSep = "/";
+	public final static String		stHierSep = "/";
 
 	private class MyContentHandler implements ContentHandler {
         private static final int LIB = 1;

@@ -8,7 +8,7 @@
 <cell name="macro4" width="293.16" height="122.64" rotate="R90"/>
 </lib>
 <components>
-<comp ref="macro4" name="TraceRAM/SRAM"/>
+<comp ref="macro4" name="u1/SRAM"/>
 <comp ref="macro1" name="dram0/RAM/SRAM0"/>
 <comp ref="macro1" name="dram0/RAM/SRAM1"/>
 <comp ref="macro1" name="dram0/RAM/SRAM2"/>

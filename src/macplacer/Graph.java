@@ -26,7 +26,11 @@
  */
 package macplacer;
 import	java.util.LinkedList;
+import	java.util.List;
 import	java.util.Collection;
+import	java.util.Arrays;
+import	java.util.Comparator;
+
 
 /**
  * Undirected graph of nodes<N> and edges<E>.
@@ -45,6 +49,35 @@ public class Graph<N,E> {
 		return m_edges;
 	}
 
+	/**
+	 * Sort edges.
+	 * @param comp implements Comparator interface.
+	 * @param descending set true for descending order, else ascending.
+	 */
+	public void sortEdges(final Comparator<E> comp, final boolean descending) {
+		Edge<N,E> edges[] = m_edges.toArray(new Edge[0]);
+		Arrays.sort(edges, new Comparator<Edge<N,E>>() {
+			public int compare(Edge<N,E> o1, Edge<N,E> o2) {
+				E e1 = o1.getEdgeValue();
+				E e2 = o2.getEdgeValue();
+				int c = comp.compare(e1, e2);
+				if (descending) {	//reverse for descending
+					c = (0 == c) ? 0 : ((c < 0) ? 1 : -1);
+				}
+				return c;
+			}
+		});
+		m_edges = Util.toList(edges);
+	}
+
+	/**
+	 * Sort edges in descending order.
+	 * @param comp implements Comparator interface.
+	 */
+	public void sortEdgesDescending(final Comparator<E> comp) {
+		sortEdges(comp, true);
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder buf = new StringBuilder(this.getClass().getName()+":\n");
@@ -54,11 +87,14 @@ public class Graph<N,E> {
 		return buf.toString();
 	}
 
-	private LinkedList<Edge<N,E>>	m_edges = new LinkedList<Edge<N,E>>();
+	private List<Edge<N,E>>	m_edges = new LinkedList<Edge<N,E>>();
 
 	public static class Node<N> {
 		public Node(N val) {
 			m_val = val;
+		}
+		public Node() {
+			this(null);
 		}
 		public N getVal() {
 			return m_val;
@@ -81,6 +117,9 @@ public class Graph<N,E> {
 		}
 		public Edge(Node<N> n1, Node<N> n2) {
 			this(null,n1,n2);
+		}
+		public Edge() {
+			this(null,null,null);
 		}
 		public void setEdgeValue(E edgeVal) {
 			m_edgeValue = edgeVal;

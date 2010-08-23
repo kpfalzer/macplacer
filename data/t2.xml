@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<design name="test2">
+<lib>
+<cell name="macro1" width="1201.90" height="116.20" rotate="R90"/>
+<cell name="macro2" width="631.12" height="57.26" rotate="R90"/>
+<cell name="macro3" width="472.08" height="434.42" rotate="R90"/>
+<cell name="macro4" width="688.38" height="479.08" rotate="R90"/>
+<cell name="macro5" width="293.16" height="122.64" rotate="R90"/>
+<cell name="macro6" width="472.08" height="434.42" rotate="R90"/>
+</lib>
+<components>
+<comp ref="macro5" name="u1/SRAM/u_mem"/>
+<comp name="u2/MEM/SRAM/u_mem" ref="macro1"/>
+<comp name="u3/MEM/SRAM/u_mem" ref="macro2"/>
+<comp name="dram0/RAM/SRAM0/u_mem" ref="macro3"/>
+<comp name="dram0/RAM/SRAM1/u_mem" ref="macro3"/>
+<comp name="dram0/RAM/SRAM2/u_mem" ref="macro3"/>
+<comp name="dram0/RAM/SRAM3/u_mem" ref="macro3"/>
+<comp name="dram1/RAM/SRAM0/u_mem" ref="macro6"/>
+<comp name="dram1/RAM/SRAM1/u_mem" ref="macro6"/>
+<comp name="iram/RAM0/SRAM/u_mem" ref="macro4"/>
+<comp name="iram/RAM1/SRAM/u_mem" ref="macro4"/>
+</components>
+</design>

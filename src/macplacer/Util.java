@@ -25,9 +25,11 @@
  *************************************************************************
  */
 package macplacer;
+import  java.util.Arrays;
 import	java.util.List;
 import	java.util.StringTokenizer;
 import	java.util.ArrayList;
+import	java.util.Collection;
 
 /**
  *
@@ -98,4 +100,9 @@ public class Util {
 		}
 		return parts;
 	}
+
+	public static <T> List<T> toList(T ar[]) {
+		return Arrays.asList(ar);
+	}
+
 }
