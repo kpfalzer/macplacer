@@ -169,12 +169,5 @@ class MyCanvas3 extends Canvas {
             //debug(m_selectRect);
             repaint();  //TODO: optimize
         }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            //debug(e);
-            m_selectRect = null;
-        }
-        
     }
 }
