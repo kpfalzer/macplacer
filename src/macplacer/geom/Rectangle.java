@@ -24,50 +24,52 @@
  *************************************************************************
  *************************************************************************
  */
-package macplacer;
-import static macplacer.Util.asInt;
-import	org.xml.sax.Attributes;
+package macplacer.geom;
+import	java.awt.geom.Rectangle2D;
 
 /**
- * Library cell object.
+ * Rectangle with origin (state) wrt. awt/drawing space:
+ * i.e., origin in awt space is upper-left;
+ * in placement space, origin is lower-left.
  * @author karl
  */
-public class LibCell {
-	public LibCell(String name, double height, double width, int npins) {
-		m_refName = name;
-		m_height  = height;
-		m_width	  = width;
-		m_rotate  = null;
-		m_pinCount = npins;
-	}
-	public LibCell(Attributes atts) {
-		m_refName = atts.getValue("name");
-		m_height  = Double.parseDouble(atts.getValue("height"));
-		m_width	  = Double.parseDouble(atts.getValue("width"));
-		m_rotate  = atts.getValue("rotate");
-		m_pinCount = asInt(atts.getValue("npins"), -1);
-	}
-
-	public String getName() {
-		return m_refName;
-	}
-
-	public String getRotate() {
-		return m_rotate;
-	}
-
-	public double getWidth() {
-		return m_width;
-	}
-
-	public double getHeight() {
-		return m_height;
-	}
-	
-	private	final String	m_refName, m_rotate;
-	private final double	m_height, m_width;
+public class Rectangle extends Rectangle2D.Double {
 	/**
-	 * Use to approximate wire impact.
+	 * Create Rectangle with lower-left Point origin.
+	 * @param ll lower-left origin.
+	 * @param w width of rectangle.
+	 * @param h height of rectangle.
 	 */
-	private final int	m_pinCount;
+	public Rectangle(Point ll, double w, double h) {
+		super(ll.getX(), ll.getY() + h, w, h);
+	}
+
+	/**
+	 * Create Rectangle with lower-left discrete origin points.
+	 * @param llx lower-left x coordinate.
+	 * @param lly lower-left y coordinate.
+	 * @param w width of rectangle.
+	 * @param h height of rectangle.
+	 */
+	public Rectangle(double llx, double lly, double w, double h) {
+		this(new Point(llx, lly), w, h);
+	}
+
+	/**
+	 * Create Rectangle with lower-left origin at (0,0) in placement space.
+	 * @param llx lower-left x coordinate.
+	 * @param lly lower-left y coordinate.
+	 * @param w width of rectangle.
+	 * @param h height of rectangle.
+	 */
+	public Rectangle(double w, double h) {
+		this(0, 0, w, h);
+	}
+
+	/**
+	 * Return lower-left origin.
+	 */
+	public Point getLowerLeft() {
+		return new Point(x, y - height);
+	}
 }

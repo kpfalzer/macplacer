@@ -25,49 +25,23 @@
  *************************************************************************
  */
 package macplacer;
-import static macplacer.Util.asInt;
-import	org.xml.sax.Attributes;
+import	macplacer.geom.Rectangle;
 
 /**
- * Library cell object.
+ *
  * @author karl
  */
-public class LibCell {
-	public LibCell(String name, double height, double width, int npins) {
-		m_refName = name;
-		m_height  = height;
-		m_width	  = width;
-		m_rotate  = null;
-		m_pinCount = npins;
-	}
-	public LibCell(Attributes atts) {
-		m_refName = atts.getValue("name");
-		m_height  = Double.parseDouble(atts.getValue("height"));
-		m_width	  = Double.parseDouble(atts.getValue("width"));
-		m_rotate  = atts.getValue("rotate");
-		m_pinCount = asInt(atts.getValue("npins"), -1);
+public class Floorplan {
+	public Floorplan(double width, double height) {
+		m_bbox = new Rectangle(width, height);
 	}
 
-	public String getName() {
-		return m_refName;
+	public Rectangle getBoundingBox() {
+		return m_bbox;
 	}
 
-	public String getRotate() {
-		return m_rotate;
-	}
-
-	public double getWidth() {
-		return m_width;
-	}
-
-	public double getHeight() {
-		return m_height;
-	}
-	
-	private	final String	m_refName, m_rotate;
-	private final double	m_height, m_width;
 	/**
-	 * Use to approximate wire impact.
+	 * Floorplan bounding box (in drawing space).
 	 */
-	private final int	m_pinCount;
+	private final Rectangle	m_bbox;
 }

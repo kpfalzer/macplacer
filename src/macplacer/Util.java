@@ -45,6 +45,16 @@ public class Util {
 	}
 
 	/**
+	 * Convert string to integer.
+	 * @param sval string value of integer or null.
+	 * @param dflt return as value if sval is null.
+	 * @return sval as int or dflt.
+	 */
+	 public static int asInt(String sval, int dflt) {
+		return (null == sval) ? dflt : Integer.parseInt(sval);
+	 }
+
+	/**
 	 * Return Graph of common name prefix count.
 	 */
 	public static Graph<Instance,Integer> measureCommonPrefix(List<Instance> eles, String sep) {

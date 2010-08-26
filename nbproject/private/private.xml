@@ -12,5 +12,8 @@
         <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/Algorithm.java</file>
         <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/Cluster.java</file>
         <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/DefaultAlgorithm.java</file>
+        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/geom/Point.java</file>
+        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/geom/Rectangle.java</file>
+        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/Floorplan.java</file>
     </open-files>
 </project-private>

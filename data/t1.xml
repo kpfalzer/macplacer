@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <design name="test1">
 <lib>
-<cell name="macro1" width="472.08" height="434.42" rotate="R90"/>
-<cell name="macro2" width="688.38" height="479.08" rotate="R90"/>
+<cell name="macro1" width="472.08" height="434.42" rotate="R90" npins="50"/>
+<cell name="macro2" width="688.38" height="479.08" rotate="R90" npins="80"/>
 <!-- macro3 is same size as macro1-->
-<cell name="macro3" width="472.08" height="434.42" rotate="R90"/>
-<cell name="macro4" width="293.16" height="122.64" rotate="R90"/>
+<cell name="macro3" width="472.08" height="434.42" rotate="R90" npins="50"/>
+<cell name="macro4" width="293.16" height="122.64" rotate="R90" npins="30"/>
 </lib>
 <components>
 <comp ref="macro4" name="u1/SRAM"/>

@@ -24,50 +24,15 @@
  *************************************************************************
  *************************************************************************
  */
-package macplacer;
-import static macplacer.Util.asInt;
-import	org.xml.sax.Attributes;
+package macplacer.geom;
+import	java.awt.geom.Point2D;
 
 /**
- * Library cell object.
+ *
  * @author karl
  */
-public class LibCell {
-	public LibCell(String name, double height, double width, int npins) {
-		m_refName = name;
-		m_height  = height;
-		m_width	  = width;
-		m_rotate  = null;
-		m_pinCount = npins;
+public class Point extends Point2D.Double {
+	public Point(double x, double y) {
+		super(x, y);
 	}
-	public LibCell(Attributes atts) {
-		m_refName = atts.getValue("name");
-		m_height  = Double.parseDouble(atts.getValue("height"));
-		m_width	  = Double.parseDouble(atts.getValue("width"));
-		m_rotate  = atts.getValue("rotate");
-		m_pinCount = asInt(atts.getValue("npins"), -1);
-	}
-
-	public String getName() {
-		return m_refName;
-	}
-
-	public String getRotate() {
-		return m_rotate;
-	}
-
-	public double getWidth() {
-		return m_width;
-	}
-
-	public double getHeight() {
-		return m_height;
-	}
-	
-	private	final String	m_refName, m_rotate;
-	private final double	m_height, m_width;
-	/**
-	 * Use to approximate wire impact.
-	 */
-	private final int	m_pinCount;
 }
