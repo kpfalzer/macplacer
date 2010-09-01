@@ -28,9 +28,7 @@ package macplacer.geom;
 import	java.awt.geom.Rectangle2D;
 
 /**
- * Rectangle with origin (state) wrt. awt/drawing space:
- * i.e., origin in awt space is upper-left;
- * in placement space, origin is lower-left.
+ * Rectangle with origin at lower-left.
  * @author karl
  */
 public class Rectangle extends Rectangle2D.Double {
@@ -44,11 +42,11 @@ public class Rectangle extends Rectangle2D.Double {
 	 * @param h height of rectangle.
 	 */
 	public Rectangle(Point ll, Dimension dimension) {
-		translate(ll, dimension);
+		setCoordinates(ll, dimension);
 	}
 
 	/**
-	 * Create Rectangle with lower-left origin at (0,0) in placement space.
+	 * Create Rectangle with lower-left origin at (0,0).
 	 * @param llx lower-left x coordinate.
 	 * @param lly lower-left y coordinate.
 	 * @param dimension dimension of rectangle.
@@ -65,6 +63,13 @@ public class Rectangle extends Rectangle2D.Double {
 	}
 
 	/**
+	 * Return dimension.
+	 */
+	public Dimension getDimension() {
+		return new Dimension(getWidth(), getHeight());
+	}
+
+	/**
 	 * Rotate given orientation and translate to draw orientation.
 	 * @param lowerLeft lower-left (origin) of basic orientation.
 	 * @param dimension dimension of basic orientation.
@@ -76,18 +81,18 @@ public class Rectangle extends Rectangle2D.Double {
 				dimension.setSize(dimension.getHeight(), dimension.getWidth());
 			}
 		}
-		translate(lowerLeft, dimension);
+		setCoordinates(lowerLeft, dimension);
 	}
 
 	/**
-	 * Set drawing coordinates.
+	 * Set coordinates.
 	 * @param lowerLeft lower-left corner of rectangle.
 	 * @param dimension dimension of rectangle.
 	 */
-	private void translate(Point lowerLeft, Dimension dimension) {
+	private void setCoordinates(Point lowerLeft, Dimension dimension) {
 		super.width = dimension.getWidth();
 		super.height = dimension.getHeight();
 		super.x = lowerLeft.getX();
-		super.y = lowerLeft.getY() + height;	//move to upper-left
+		super.y = lowerLeft.getY();
 	}
 }

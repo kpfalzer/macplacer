@@ -31,8 +31,6 @@ import	java.awt.Graphics;
 import	java.awt.Graphics2D;
 import	java.awt.BasicStroke;
 import	java.awt.Color;
-import	java.awt.geom.AffineTransform;
-
 /**
  *
  * @author karl
@@ -40,11 +38,26 @@ import	java.awt.geom.AffineTransform;
 public class Canvas extends java.awt.Canvas {
 	public Canvas(Floorplan fplan) {
 		m_fplan = fplan;
+		/**
+		 * Preferred height based on aspect ratio
+		 */
+		macplacer.geom.Dimension dim = m_fplan.getBoundingBox().getDimension();
+		if (dim.getWidth() > dim.getHeight()) {
+			m_preferredDimension.width = stPreferredMax;
+			m_preferredDimension.height = (int)(stPreferredMax * dim.getAspectRatio());
+		} else {
+			m_preferredDimension.height = stPreferredMax;
+			m_preferredDimension.width = (int)(stPreferredMax / dim.getAspectRatio());
+		}
 	}
 
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
+		double needWidth = m_fplan.getBoundingBox().getWidth();
+		double needHeight = m_fplan.getBoundingBox().getHeight();
+		m_scaleX = m_preferredDimension.getWidth() / needWidth;
+		m_scaleY = m_preferredDimension.getHeight() / needHeight;
 		g2.setStroke(stLine);
 		transformAndDraw(g2, m_fplan.getBoundingBox(), false);
 		for (Rectangle rect : m_fplan.getPlaced()) {
@@ -54,14 +67,17 @@ public class Canvas extends java.awt.Canvas {
 
 	@Override
 	public Dimension getPreferredSize() {
-		double width  = (2 * stX0) + m_fplan.getBoundingBox().getWidth();
-		double height = (2 * stY0) + m_fplan.getBoundingBox().getHeight();
-		return new Dimension((int)width, (int)height);
+		return m_preferredDimension;
 	}
 
+	/**
+	 * Transform, scale and draw rectangle.
+	 * @param g2 graphics context.
+	 * @param rect rectangle to draw (after transform origin from ll to ul).
+	 * @param doFill fill rectangle if true.
+	 */
 	private void transformAndDraw(Graphics2D g2, Rectangle rect, boolean doFill) {
-		AffineTransform xform = getAffineTransform(rect);
-		g2.setTransform(xform);
+		rect = transform(rect);
 		if (doFill) {
 			Color was = g2.getColor();
 			g2.setColor(stBoxColor);
@@ -71,21 +87,37 @@ public class Canvas extends java.awt.Canvas {
 		g2.draw(rect);
 	}
 
-	private AffineTransform getAffineTransform(Rectangle rect) {
-		double tx = stX0;
-		double ty = stY0 + m_fplan.getBoundingBox().getHeight();
-		ty -= (rect.getY() + rect.getHeight());
-		return AffineTransform.getTranslateInstance(tx, ty);
+	/**
+	 * Transform origin from ll (lower-left) to ul (upper-left) and scale.
+	 * @param rect rectangle to transform and scale.
+	 * @return transform and scaled rectangle.
+	 */
+	private Rectangle transform(Rectangle rect) {
+		double x = rect.getX() * m_scaleX;
+		double y = m_fplan.getBoundingBox().getHeight();
+		y -= (rect.getY() + rect.getHeight());
+		y *= m_scaleY;
+		double width = rect.getWidth() * m_scaleX;
+		double height = rect.getHeight() * m_scaleY;
+		return new Rectangle(new Point(x, y), new macplacer.geom.Dimension(width, height));
 	}
 
 	private final Floorplan	m_fplan;
 	private final static BasicStroke stLine = new BasicStroke(1.0f);
 	/**
-	 * (x,y) offset of upper-left corner.
-	 */
-	private final static double stX0 = 20.0, stY0 = 20.0;
-	/**
 	 * Box color.
 	 */
 	private final static Color stBoxColor = Color.LIGHT_GRAY;
+	/**
+	 * Preferred max dimension.
+	 */
+	private final int stPreferredMax = 800;
+	/**
+	 * Preferred dimension.
+	 */
+	private Dimension	m_preferredDimension = new Dimension();
+	/**
+	 * Scaling factors.
+	 */
+	private double m_scaleX, m_scaleY;
 }

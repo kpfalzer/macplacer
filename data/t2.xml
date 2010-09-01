@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<design name="test2">
+<!-- UNITS DISTANCE MICRONS 2000 ;-->
+<!-- DIEAREA ( 0 0 ) ( 3270750 2706400 ) ;-->
+<design name="test2" width="1635.375" height="1353.2">
 <lib>
 <cell name="macro1" npins="100" width="1201.90" height="116.20" rotate="R90"/>
 <cell name="macro2" npins="70" width="631.12" height="57.26" rotate="R90"/>

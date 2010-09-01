@@ -6,6 +6,7 @@
 package macplacer.test;
 import	macplacer.geom.Canvas;
 import	macplacer.geom.Dimension;
+import	macplacer.geom.Point;
 import	macplacer.Floorplan;
 import	macplacer.Design;
 import	macplacer.Instance;
@@ -23,13 +24,15 @@ public class Canvas1 {
     public static void main(String[] args) {
         final Canvas1 cnvs = new Canvas1();
 		try {
-			Design dsgn = new Design(args[0]);
-			Instance inst = dsgn.getInstances().get(0);
-			Placed placed = new Placed(inst);
-			cnvs.m_fplan.addPlaced(placed);
+			cnvs.m_design = new Design(args[0]);
 		} catch (Exception ex) {
 			error(ex);
 		}
+		Instance inst = cnvs.m_design.getInstances().get(0);
+		Placed placed = new Placed(inst);//,new Point (800,600));
+		Dimension dmsn = cnvs.m_design.getFplanDimension();
+		cnvs.m_fplan = new Floorplan(dmsn);
+		cnvs.m_fplan.addPlaced(placed);
 		SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 cnvs.createAndShowGUI();
@@ -37,7 +40,8 @@ public class Canvas1 {
         });
     }
 
-	private Floorplan	m_fplan = new Floorplan(new Dimension(600,600));
+	private Floorplan	m_fplan;
+	private Design		m_design;
 
     private void createAndShowGUI() {
         JFrame f = new JFrame("Canvas1 test");

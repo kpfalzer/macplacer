@@ -69,5 +69,13 @@ public class Dimension extends Dimension2D {
 		return getHeight() * getWidth();
 	}
 
+	/**
+	 * Get aspect ratio (height / width).
+	 * @return (height / width).
+	 */
+	public double getAspectRatio() {
+		return getHeight() / getWidth();
+	}
+
 	private double	m_height, m_width;
 }

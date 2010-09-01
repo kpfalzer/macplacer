@@ -25,6 +25,7 @@
  *************************************************************************
  */
 package macplacer;
+import	macplacer.geom.Dimension;
 import static macplacer.Util.error;
 import  java.io.IOException;
 import	java.io.FileInputStream;
@@ -65,6 +66,10 @@ public class Design {
 		return m_instances;
 	}
 
+	public Dimension getFplanDimension() {
+		return m_fplanDim;
+	}
+
 	private void initialize() {
 		((ArrayList)m_instances).trimToSize();
 	}
@@ -72,6 +77,7 @@ public class Design {
 	private HashMap<String,LibCell>	m_libCellsByName = new HashMap<String, LibCell>();
 	private List<Instance>			m_instances = new ArrayList<Instance>(100);
 	private String					m_designName;
+	private	Dimension				m_fplanDim;
 	public final static String		stHierSep = "/";
 
 	private class MyContentHandler implements ContentHandler {
@@ -83,6 +89,9 @@ public class Design {
 		public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
             if (qName.equals("design")) {
 				m_designName = atts.getValue("name");
+				double width =  Double.parseDouble(atts.getValue("width"));
+				double height = Double.parseDouble(atts.getValue("height"));
+				m_fplanDim = new Dimension(width,height);
 			} else if (qName.equals("lib")) {
 				m_state = LIB;
 			} else if ((LIB == m_state) && qName.equals("cell")) {
