@@ -31,7 +31,6 @@ import	java.io.FileInputStream;
 import	java.util.HashMap;
 import	java.util.ArrayList;
 import	java.util.List;
-import	java.util.Comparator;
 import	org.xml.sax.Attributes;
 import	org.xml.sax.SAXException;
 import  org.xml.sax.XMLReader;

@@ -26,6 +26,7 @@
  */
 package macplacer;
 import static macplacer.Util.asInt;
+import  macplacer.geom.Dimension;
 import	org.xml.sax.Attributes;
 
 /**
@@ -35,15 +36,15 @@ import	org.xml.sax.Attributes;
 public class LibCell {
 	public LibCell(String name, double height, double width, int npins) {
 		m_refName = name;
-		m_height  = height;
-		m_width	  = width;
+		m_dimension = new Dimension(width, height);
 		m_rotate  = null;
 		m_pinCount = npins;
 	}
 	public LibCell(Attributes atts) {
 		m_refName = atts.getValue("name");
-		m_height  = Double.parseDouble(atts.getValue("height"));
-		m_width	  = Double.parseDouble(atts.getValue("width"));
+		double h = Double.parseDouble(atts.getValue("height"));
+		double w = Double.parseDouble(atts.getValue("width"));
+		m_dimension = new Dimension(w, h);
 		m_rotate  = atts.getValue("rotate");
 		m_pinCount = asInt(atts.getValue("npins"), -1);
 	}
@@ -56,16 +57,12 @@ public class LibCell {
 		return m_rotate;
 	}
 
-	public double getWidth() {
-		return m_width;
+	public Dimension getDimension() {
+		return m_dimension;
 	}
 
-	public double getHeight() {
-		return m_height;
-	}
-	
 	private	final String	m_refName, m_rotate;
-	private final double	m_height, m_width;
+	private final Dimension	m_dimension;
 	/**
 	 * Use to approximate wire impact.
 	 */

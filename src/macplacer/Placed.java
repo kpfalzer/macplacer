@@ -24,70 +24,33 @@
  *************************************************************************
  *************************************************************************
  */
-package macplacer.geom;
-import	java.awt.geom.Rectangle2D;
+package macplacer;
+import	macplacer.geom.Point;
+import  macplacer.geom.Rectangle;
 
 /**
- * Rectangle with origin (state) wrt. awt/drawing space:
- * i.e., origin in awt space is upper-left;
- * in placement space, origin is lower-left.
+ * A placed Instance.
  * @author karl
  */
-public class Rectangle extends Rectangle2D.Double {
-	public static enum ERotation {
-		eNone, ePos90
+public class Placed extends Rectangle {
+	/**
+	 * Create placement at lower-left corner (i.e., (0,0)).
+	 * @param inst placed instance.
+	 */
+	public Placed(Instance inst) {
+		this(inst, new Point());
 	}
 	/**
-	 * Create Rectangle with lower-left Point origin.
-	 * @param ll lower-left origin.
-	 * @param dimenstion height and width of rectangle.
-	 * @param h height of rectangle.
+	 * Create placement relative to origin (lower-left corner).
+	 * @param inst placed instance.
+	 * @param lowerLeft position (in floorplan) of lower-left corner.
 	 */
-	public Rectangle(Point ll, Dimension dimension) {
-		translate(ll, dimension);
+	public Placed(Instance inst, Point lowerLeft) {
+		super(lowerLeft, inst.getDimension());
+		m_inst = inst;
 	}
 
-	/**
-	 * Create Rectangle with lower-left origin at (0,0) in placement space.
-	 * @param llx lower-left x coordinate.
-	 * @param lly lower-left y coordinate.
-	 * @param dimension dimension of rectangle.
-	 */
-	public Rectangle(Dimension dimension) {
-		this(new Point(), dimension);
-	}
-
-	/**
-	 * Return lower-left origin.
-	 */
-	public Point getLowerLeft() {
-		return new Point(x, y - height);
-	}
-
-	/**
-	 * Rotate given orientation and translate to draw orientation.
-	 * @param lowerLeft lower-left (origin) of basic orientation.
-	 * @param dimension dimension of basic orientation.
-	 * @param rotate
-	 */
-	public void rotate(Point lowerLeft, Dimension dimension, ERotation rotate) {
-		switch (rotate) {
-			case ePos90: {	//swap height <-> width
-				dimension.setSize(dimension.getHeight(), dimension.getWidth());
-			}
-		}
-		translate(lowerLeft, dimension);
-	}
-
-	/**
-	 * Set drawing coordinates.
-	 * @param lowerLeft lower-left corner of rectangle.
-	 * @param dimension dimension of rectangle.
-	 */
-	private void translate(Point lowerLeft, Dimension dimension) {
-		super.width = dimension.getWidth();
-		super.height = dimension.getHeight();
-		super.x = lowerLeft.getX();
-		super.y = lowerLeft.getY() + height;	//move to upper-left
-	}
+	private final Instance	m_inst;
+	private	Point			m_lowerLeft = new Point();
+	private ERotation		m_rotation = ERotation.eNone;
 }

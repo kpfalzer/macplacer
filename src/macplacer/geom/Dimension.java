@@ -25,69 +25,49 @@
  *************************************************************************
  */
 package macplacer.geom;
-import	java.awt.geom.Rectangle2D;
+import	java.awt.geom.Dimension2D;
 
 /**
- * Rectangle with origin (state) wrt. awt/drawing space:
- * i.e., origin in awt space is upper-left;
- * in placement space, origin is lower-left.
+ *
  * @author karl
  */
-public class Rectangle extends Rectangle2D.Double {
-	public static enum ERotation {
-		eNone, ePos90
-	}
-	/**
-	 * Create Rectangle with lower-left Point origin.
-	 * @param ll lower-left origin.
-	 * @param dimenstion height and width of rectangle.
-	 * @param h height of rectangle.
-	 */
-	public Rectangle(Point ll, Dimension dimension) {
-		translate(ll, dimension);
+public class Dimension extends Dimension2D {
+
+	public Dimension() {
+		this(0.0,0.0);
 	}
 
-	/**
-	 * Create Rectangle with lower-left origin at (0,0) in placement space.
-	 * @param llx lower-left x coordinate.
-	 * @param lly lower-left y coordinate.
-	 * @param dimension dimension of rectangle.
-	 */
-	public Rectangle(Dimension dimension) {
-		this(new Point(), dimension);
+	public Dimension(double width, double height) {
+		setSize(width, height);
 	}
 
-	/**
-	 * Return lower-left origin.
-	 */
-	public Point getLowerLeft() {
-		return new Point(x, y - height);
+	@Override
+	public double getHeight() {
+		return m_height;
 	}
 
-	/**
-	 * Rotate given orientation and translate to draw orientation.
-	 * @param lowerLeft lower-left (origin) of basic orientation.
-	 * @param dimension dimension of basic orientation.
-	 * @param rotate
-	 */
-	public void rotate(Point lowerLeft, Dimension dimension, ERotation rotate) {
-		switch (rotate) {
-			case ePos90: {	//swap height <-> width
-				dimension.setSize(dimension.getHeight(), dimension.getWidth());
-			}
-		}
-		translate(lowerLeft, dimension);
+	@Override
+	public double getWidth() {
+		return m_width;
 	}
 
-	/**
-	 * Set drawing coordinates.
-	 * @param lowerLeft lower-left corner of rectangle.
-	 * @param dimension dimension of rectangle.
-	 */
-	private void translate(Point lowerLeft, Dimension dimension) {
-		super.width = dimension.getWidth();
-		super.height = dimension.getHeight();
-		super.x = lowerLeft.getX();
-		super.y = lowerLeft.getY() + height;	//move to upper-left
+	@Override
+	public void setSize(double width, double height) {
+		m_width = width;
+		m_height = height;
 	}
+
+	public void setWidth(double width) {
+		m_width = width;
+	}
+
+	public void setHeight(double height) {
+		m_height = height;
+	}
+
+	public double getArea() {
+		return getHeight() * getWidth();
+	}
+
+	private double	m_height, m_width;
 }

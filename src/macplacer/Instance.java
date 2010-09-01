@@ -26,6 +26,8 @@
  */
 package macplacer;
 
+import macplacer.geom.Dimension;
+
 /**
  *
  * @author karl
@@ -42,6 +44,10 @@ public class Instance {
 
 	public LibCell getLibCell() {
 		return m_ref;
+	}
+
+	public Dimension getDimension() {
+		return getLibCell().getDimension();
 	}
 
 	@Override

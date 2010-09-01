@@ -25,69 +25,67 @@
  *************************************************************************
  */
 package macplacer.geom;
-import	java.awt.geom.Rectangle2D;
+import	macplacer.Floorplan;
+import	java.awt.Dimension;
+import	java.awt.Graphics;
+import	java.awt.Graphics2D;
+import	java.awt.BasicStroke;
+import	java.awt.Color;
+import	java.awt.geom.AffineTransform;
 
 /**
- * Rectangle with origin (state) wrt. awt/drawing space:
- * i.e., origin in awt space is upper-left;
- * in placement space, origin is lower-left.
+ *
  * @author karl
  */
-public class Rectangle extends Rectangle2D.Double {
-	public static enum ERotation {
-		eNone, ePos90
-	}
-	/**
-	 * Create Rectangle with lower-left Point origin.
-	 * @param ll lower-left origin.
-	 * @param dimenstion height and width of rectangle.
-	 * @param h height of rectangle.
-	 */
-	public Rectangle(Point ll, Dimension dimension) {
-		translate(ll, dimension);
+public class Canvas extends java.awt.Canvas {
+	public Canvas(Floorplan fplan) {
+		m_fplan = fplan;
 	}
 
-	/**
-	 * Create Rectangle with lower-left origin at (0,0) in placement space.
-	 * @param llx lower-left x coordinate.
-	 * @param lly lower-left y coordinate.
-	 * @param dimension dimension of rectangle.
-	 */
-	public Rectangle(Dimension dimension) {
-		this(new Point(), dimension);
-	}
-
-	/**
-	 * Return lower-left origin.
-	 */
-	public Point getLowerLeft() {
-		return new Point(x, y - height);
-	}
-
-	/**
-	 * Rotate given orientation and translate to draw orientation.
-	 * @param lowerLeft lower-left (origin) of basic orientation.
-	 * @param dimension dimension of basic orientation.
-	 * @param rotate
-	 */
-	public void rotate(Point lowerLeft, Dimension dimension, ERotation rotate) {
-		switch (rotate) {
-			case ePos90: {	//swap height <-> width
-				dimension.setSize(dimension.getHeight(), dimension.getWidth());
-			}
+	@Override
+	public void paint(Graphics g) {
+		Graphics2D g2 = (Graphics2D)g;
+		g2.setStroke(stLine);
+		transformAndDraw(g2, m_fplan.getBoundingBox(), false);
+		for (Rectangle rect : m_fplan.getPlaced()) {
+			transformAndDraw(g2, rect, true);
 		}
-		translate(lowerLeft, dimension);
 	}
 
-	/**
-	 * Set drawing coordinates.
-	 * @param lowerLeft lower-left corner of rectangle.
-	 * @param dimension dimension of rectangle.
-	 */
-	private void translate(Point lowerLeft, Dimension dimension) {
-		super.width = dimension.getWidth();
-		super.height = dimension.getHeight();
-		super.x = lowerLeft.getX();
-		super.y = lowerLeft.getY() + height;	//move to upper-left
+	@Override
+	public Dimension getPreferredSize() {
+		double width  = (2 * stX0) + m_fplan.getBoundingBox().getWidth();
+		double height = (2 * stY0) + m_fplan.getBoundingBox().getHeight();
+		return new Dimension((int)width, (int)height);
 	}
+
+	private void transformAndDraw(Graphics2D g2, Rectangle rect, boolean doFill) {
+		AffineTransform xform = getAffineTransform(rect);
+		g2.setTransform(xform);
+		if (doFill) {
+			Color was = g2.getColor();
+			g2.setColor(stBoxColor);
+			g2.fill(rect);
+			g2.setColor(was);
+		}
+		g2.draw(rect);
+	}
+
+	private AffineTransform getAffineTransform(Rectangle rect) {
+		double tx = stX0;
+		double ty = stY0 + m_fplan.getBoundingBox().getHeight();
+		ty -= (rect.getY() + rect.getHeight());
+		return AffineTransform.getTranslateInstance(tx, ty);
+	}
+
+	private final Floorplan	m_fplan;
+	private final static BasicStroke stLine = new BasicStroke(1.0f);
+	/**
+	 * (x,y) offset of upper-left corner.
+	 */
+	private final static double stX0 = 20.0, stY0 = 20.0;
+	/**
+	 * Box color.
+	 */
+	private final static Color stBoxColor = Color.LIGHT_GRAY;
 }

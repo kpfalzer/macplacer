@@ -25,23 +25,34 @@
  *************************************************************************
  */
 package macplacer;
+import	macplacer.geom.Dimension;
 import	macplacer.geom.Rectangle;
+import	java.util.LinkedList;
 
 /**
  *
  * @author karl
  */
 public class Floorplan {
-	public Floorplan(double width, double height) {
-		m_bbox = new Rectangle(width, height);
+	public Floorplan(Dimension dimension) {
+		m_bbox = new Rectangle(dimension);
 	}
 
 	public Rectangle getBoundingBox() {
 		return m_bbox;
 	}
 
+	public void addPlaced(Placed item) {
+		m_placed.add(item);
+	}
+
+	public LinkedList<Placed> getPlaced() {
+		return m_placed;
+	}
+
 	/**
 	 * Floorplan bounding box (in drawing space).
 	 */
-	private final Rectangle	m_bbox;
+	private final Rectangle		m_bbox;
+	private LinkedList<Placed>	m_placed = new LinkedList<Placed>();
 }
