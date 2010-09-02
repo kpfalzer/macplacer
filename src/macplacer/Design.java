@@ -54,12 +54,15 @@ public class Design {
 	}
 
 	public static void main(String argv[]) {
+		Design des = null;
 		try {
-			Design des = new Design(argv[0]);
-			new DefaultAlgorithm().getClusters(des);
+			des = new Design(argv[0]);
 		} catch (Exception ex) {
 			error(ex);
 		}
+		Algorithm algo = new DefaultAlgorithm();
+		Cluster cluster = algo.getClusters(des);
+		cluster.getNodeCount();
 	}
 
 	public List<Instance> getInstances() {

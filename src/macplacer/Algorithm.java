@@ -25,12 +25,16 @@
  *************************************************************************
  */
 package macplacer;
-import	java.util.List;
 
 /**
  * Interface for macro placer algorithm.
  * @author karl
  */
 public interface Algorithm {
-	public List<Cluster> getClusters(Design desgn);
+	/**
+	 * Create initial cluster set.
+	 * @param desgn design data.
+	 * @return initial cluster set.
+	 */
+	public Cluster getClusters(Design desgn);
 };

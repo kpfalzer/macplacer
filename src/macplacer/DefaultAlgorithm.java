@@ -41,7 +41,7 @@ public class DefaultAlgorithm implements Algorithm {
 	 * @param desgn design containing macros.
 	 * @return un-ordered list of clusters.
 	 */
-	public List<Cluster> getClusters(Design desgn) {
+	public Cluster getClusters(Design desgn) {
 		Graph g = Util.measureCommonPrefix(desgn.getInstances(), Design.stHierSep);
 		g.sortEdgesDescending(new Comparator<Integer>() {
 			public int compare(Integer o1, Integer o2) {
@@ -51,7 +51,7 @@ public class DefaultAlgorithm implements Algorithm {
 		/*DBG*/System.out.println(g.toString());
 		Collection<Graph.Edge<Instance,Integer>> edges = g.getEdges();
 		HashMap<Instance,Integer> mapToCluster = new HashMap<Instance,Integer>();
-		ArrayList<Cluster> clusters = new ArrayList<Cluster>(10);
+		ArrayList<Lcluster> clusters = new ArrayList<Lcluster>(10);
 		/*
 		 * Visit every edge and put nodes into same cluster.
 		 */
@@ -65,10 +65,10 @@ public class DefaultAlgorithm implements Algorithm {
 				}
 				key = null;
 			}
-			Cluster useCluster = null;
+			Lcluster useCluster = null;
 			int mapIx = -1;	//index into cluster
 			if (null == key) {	//start new cluster
-				useCluster = new Cluster();
+				useCluster = new Lcluster();
 				key = nodes[0].getVal();	//just pick one
 				useCluster.add(key);
 				mapIx = clusters.size();
@@ -90,11 +90,11 @@ public class DefaultAlgorithm implements Algorithm {
 		 * Visit all nodes and add any un-clustered ones to together in
 		 * new cluster.
 		 */
-		Cluster miscCluster = null;
+		Lcluster miscCluster = null;
 		for (Instance inst : desgn.getInstances()) {
 			if (!mapToCluster.containsKey(inst)) {
 				if (null == miscCluster) {
-					miscCluster = new Cluster();
+					miscCluster = new Lcluster();
 					clusters.add(miscCluster);
 				}
 				miscCluster.add(inst);
@@ -102,6 +102,49 @@ public class DefaultAlgorithm implements Algorithm {
 		}
 		clusters.trimToSize();
 		/*DBG*/ System.out.println(clusters.toString());
-		return clusters;
+		m_clusters = toCluster(clusters);
+		return m_clusters;
 	}
+
+	private Cluster	m_clusters;
+
+	/**
+	 * Return binary tree of clusters.
+	 * @param clusters list of Lcluster.
+	 * @return binary tree representation of clusters.
+	 */
+	private Cluster toCluster(ArrayList<Lcluster> clist) {
+		ArrayList<ClusterNode> clusters = new ArrayList<ClusterNode>(clist.size());
+		for (Lcluster c : clist) {
+			ClusterNode clust = c.toNode();
+			clusters.add(clust);
+		}
+		Cluster rval = new Cluster(clusters);
+		return rval;
+	}
+
+	/**
+	 * Group of macro instances to be clustered.
+	 * @author karl
+	 */
+	private class Lcluster extends ArrayList<Instance> {
+	
+		@Override
+		public String toString() {
+			StringBuilder buf = new StringBuilder(getClass().getName()+":\n");
+			final String pfx = "    ";
+			for (Instance inst : this) {
+				buf.append(pfx).append(inst.getName()).append('\n');
+			}
+			return buf.toString();
+		}
+	
+		/**
+		 * Convert to left-biased binary tree (i.e., only left children are present).
+		 * @return binary tree representation.
+		 */
+		public ClusterNode toNode() {
+			return new ClusterNode(this);
+		}
+	};
 };

@@ -25,22 +25,14 @@
  *************************************************************************
  */
 package macplacer;
-import	java.util.ArrayList;
+import	java.util.List;
 
 /**
  * Group of macro instances to be clustered.
  * @author karl
  */
-public class Cluster extends ArrayList<Instance> {
-
-	@Override
-	public String toString() {
-		StringBuilder buf = new StringBuilder(getClass().getName()+":\n");
-		final String pfx = "    ";
-		for (Instance inst : this) {
-			buf.append(pfx).append(inst.getName()).append('\n');
-		}
-		return buf.toString();
+public class Cluster extends BinaryTree<ClusterNode> {
+	public Cluster(List<ClusterNode> clist) {
+		super(clist);
 	}
-
 };

@@ -25,50 +25,20 @@
  *************************************************************************
  */
 package macplacer;
-import static macplacer.Util.asInt;
-import  macplacer.geom.Dimension;
-import	org.xml.sax.Attributes;
+import	java.util.List;
 
-/**
- * Library cell object.
- * @author karl
- */
-public class LibCell {
-	public LibCell(String name, double height, double width, int npins) {
-		m_refName = name;
-		m_dimension = new Dimension(width, height);
-		m_rotate  = null;
-		m_pinCount = npins;
-	}
-	public LibCell(Attributes atts) {
-		m_refName = atts.getValue("name");
-		double h = Double.parseDouble(atts.getValue("height"));
-		double w = Double.parseDouble(atts.getValue("width"));
-		m_dimension = new Dimension(w, h);
-		m_rotate  = atts.getValue("rotate");
-		m_pinCount = asInt(atts.getValue("npins"), -1);
-	}
-
-	public String getName() {
-		return m_refName;
-	}
-
-	public String getRotate() {
-		return m_rotate;
-	}
-
-	public Dimension getDimension() {
-		return m_dimension;
+public class ClusterNode extends BinaryTree<Instance> {
+	public ClusterNode(List<Instance> eles) {
+		super(eles);
 	}
 
 	public double getArea() {
-		return getDimension().getArea();
+		DoubleValue area = new DoubleValue();
+		super.preorder(new BinaryTreeNodeVisitorWithData<Instance,DoubleValue>(area) {
+			public void visit(Instance data) {
+				m_userData.val += data.getLibCell().getArea();
+			}
+		});
+		return area.val;
 	}
-
-	private	final String	m_refName, m_rotate;
-	private final Dimension	m_dimension;
-	/**
-	 * Use to approximate wire impact.
-	 */
-	private final int	m_pinCount;
 }

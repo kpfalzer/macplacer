@@ -25,50 +25,22 @@
  *************************************************************************
  */
 package macplacer;
-import static macplacer.Util.asInt;
-import  macplacer.geom.Dimension;
-import	org.xml.sax.Attributes;
 
 /**
- * Library cell object.
+ * Wrap scalar object (typically Integer, Double, ...) such that any
+ * value updates are reflected in that object.
+ * For example, in the following:
+ *     Integer i1 = 0, i2 = i1;
+ *     i1++;
+ * After "i1++", the value of i1 is 1 and i2 is 0.
+ * In order to keep an object reference for such operations, use
+ * a subclass of Value such as IntegerValue, DoubleValue.
  * @author karl
+ * @param <T> type of scalar object.
  */
-public class LibCell {
-	public LibCell(String name, double height, double width, int npins) {
-		m_refName = name;
-		m_dimension = new Dimension(width, height);
-		m_rotate  = null;
-		m_pinCount = npins;
+public class Value<T> {
+	public Value(T v) {
+		val = v;
 	}
-	public LibCell(Attributes atts) {
-		m_refName = atts.getValue("name");
-		double h = Double.parseDouble(atts.getValue("height"));
-		double w = Double.parseDouble(atts.getValue("width"));
-		m_dimension = new Dimension(w, h);
-		m_rotate  = atts.getValue("rotate");
-		m_pinCount = asInt(atts.getValue("npins"), -1);
-	}
-
-	public String getName() {
-		return m_refName;
-	}
-
-	public String getRotate() {
-		return m_rotate;
-	}
-
-	public Dimension getDimension() {
-		return m_dimension;
-	}
-
-	public double getArea() {
-		return getDimension().getArea();
-	}
-
-	private	final String	m_refName, m_rotate;
-	private final Dimension	m_dimension;
-	/**
-	 * Use to approximate wire impact.
-	 */
-	private final int	m_pinCount;
-}
+	T val;
+};

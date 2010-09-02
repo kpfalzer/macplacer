@@ -25,13 +25,74 @@
  *************************************************************************
  */
 package macplacer;
+import	java.util.List;
 
 /**
  *
  * @author karl
  */
 public class BinaryTree<T> {
+	/**
+	 * Create an empty binary tree.
+	 */
 	public BinaryTree() {}
+
+	/**
+	 * Create a binary tree with root.
+	 * @param root root node.
+	 */
+	public BinaryTree(T root) {
+		m_root = new Node<T>(root);
+	}
+
+	/**
+	 * Create left-biased (only left children used) binary tree.
+	 * @param list of elements.
+	 */
+	public BinaryTree(List<T> eles) {
+		if (eles.isEmpty()) {
+			return;
+		}
+		m_root = new Node(eles.get(0));
+		Node<T> last = getRoot();
+		for (int i = 1; i < eles.size(); i++) {
+			last.setLeft(eles.get(i));
+			last = last.getLeft();
+		}
+	}
+
+	/**
+	 * Count number of non-null nodes.
+	 * @return number of non-null nodes.
+	 */
+	public int getNodeCount() {
+		IntegerValue cnt = new IntegerValue();
+		preorder(new BinaryTreeNodeVisitorWithData<T,IntegerValue>(cnt) {
+			public void visit(T data) {
+				m_userData.val++;
+			}
+		});
+		return cnt.val;
+	}
+
+	public boolean isEmpty() {
+		return (null == m_root);
+	}
+
+	public final Node<T> getRoot() {
+		return m_root;
+	}
+
+	/**
+	 * Depth-first (preorder) traversal.
+	 * Preorder is root, left-subtree, right-subtree.
+	 * @param callback execute for each node during traversal.
+	 */
+	public void preorder(BinaryTreeNodeVisitor<T> callback) {
+		if (null != m_root) {
+			m_root.preorder(callback);
+		}
+	}
 
 	private Node<T>	m_root = null;
 
@@ -40,20 +101,34 @@ public class BinaryTree<T> {
 			m_data = data;
 		}
 
-		public Node(T data, Node left, Node right) {
+		public Node(T data, T left, T right) {
 			this(data);
-			m_left = left;
-			m_right = right;
+			setLeft(left);
+			setRight(right);
 		}
 
-		public void setLeft(Node ele) {
+		public void preorder(BinaryTreeNodeVisitor<T> callback) {
+			callback.visit(getData());
+			if (null != getLeft()) {
+				getLeft().preorder(callback);
+			}
+			if (null != getRight()) {
+				getRight().preorder(callback);
+			}
+		}
+
+		public T getData() {
+			return m_data;
+		}
+
+		public final void setLeft(T ele) {
 			assert(null == m_left);
-			m_left = ele;
+			m_left = new Node(ele);
 		}
 
-		public void setRight(Node ele) {
+		public final void setRight(T ele) {
 			assert(null == m_right);
-			m_right = ele;
+			m_right = new Node(ele);
 		}
 
 		public Node getLeft() {
@@ -76,3 +151,32 @@ public class BinaryTree<T> {
 		private Node	m_left, m_right;
 	}
 }
+
+/**
+ * Interface for binary tree node visitor.
+ * @author karl
+ * @param <N> node type.
+ */
+interface BinaryTreeNodeVisitor<N> {
+	/**
+	 * Callback during binary tree traversal/visits.
+	 * @param node current node being traversed.
+	 */
+	public void visit(N node);
+}
+
+/**
+ * Extends binary tree node visitor to add user data.
+ * @author karl
+ * @param <N> node type.
+ * @param <T> user data type.
+ */
+abstract class BinaryTreeNodeVisitorWithData<N,T>
+		implements BinaryTreeNodeVisitor<N> {
+	public BinaryTreeNodeVisitorWithData(T userData) {
+		m_userData = userData;
+	}
+	protected T	m_userData;
+}
+
+
