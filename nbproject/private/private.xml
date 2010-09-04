@@ -1,24 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/data/t1.xml</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/geom/Rectangle.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/Placed.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/geom/Dimension.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/geom/Canvas.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/Floorplan.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/test/Canvas1.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/geom/Point.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/Design.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/Util.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/DefaultAlgorithm.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/BinaryTree.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/Algorithm.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/Cluster.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/ClusterNode.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/LibCell.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/Value.java</file>
-        <file>file:/C:/cygwin/home/karl/projects/local/macplacer/src/macplacer/IntegerValue.java</file>
-    </open-files>
 </project-private>
