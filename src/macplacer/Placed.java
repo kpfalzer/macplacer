@@ -34,11 +34,11 @@ import  macplacer.geom.Rectangle;
  */
 public class Placed extends Rectangle {
 	/**
-	 * Create placement at lower-left corner (i.e., (0,0)).
+	 * Create unplaced placement.
 	 * @param inst placed instance.
 	 */
 	public Placed(Instance inst) {
-		this(inst, new Point());
+		this(inst, stUnplaced);
 	}
 	/**
 	 * Create placement relative to origin (lower-left corner).
@@ -50,7 +50,16 @@ public class Placed extends Rectangle {
 		m_inst = inst;
 	}
 
+	public boolean isPlaced() {
+		return (super.getX() >= 0);
+	}
+
+	public Instance getInstance() {
+		return m_inst;
+	}
+
 	private final Instance	m_inst;
-	private	Point			m_lowerLeft = new Point();
 	private ERotation		m_rotation = ERotation.eNone;
+
+	private static final Point stUnplaced = new Point(-1,-1);
 }

@@ -25,57 +25,16 @@
  *************************************************************************
  */
 package macplacer;
-import	macplacer.geom.Corner;
 
 /**
- * Base class for macro placer algorithm.
+ * Interface for binary tree node visitor.
  * @author karl
+ * @param <N> node type.
  */
-public abstract class Algorithm {
+public interface BinaryTreeNodeVisitor<N> {
 	/**
-	 * Create base algorithm.
+	 * Callback during binary tree traversal/visits.
+	 * @param node current node being traversed.
 	 */
-	protected Algorithm(Design design) {
-		m_design = design;
-		for (Corner corner : m_design.getFplan().getContourIterator()) {
-			m_maxPacks++;
-		}
-	}
-	/**
-	 * Create initial packing tree.
-	 */
-	public abstract void getInitialPackingTree();
-
-	/**
-	 * Create another packing tree by perturbing current one.
-	 */
-	public abstract void iterate();
-
-	public PackingTree getPackingTree() {
-		return m_packing;
-	}
-	
-	/**
-	 * Set coordinates based on cornerOffset and add to packing tree
-	 * @param pack packing to add.
-	 * @param cornerOffset corner offset.
-	 */
-	protected void addPacking(Packing pack, Corner cornerOffset) {
-		//TODO: add coordinates
-		m_packing.add(pack);
-	}
-
-	/**
-	 * Iteration.
-	 */
-	protected int	m_iteration = 0;
-	/**
-	 * Maximum/preferred number of packs.
-	 */
-	protected int	m_maxPacks = 0;
-	/**
-	 * Current packing.
-	 */
-	protected PackingTree	m_packing;
-	protected Design		m_design;
-};
+	public void visit(N node);
+}

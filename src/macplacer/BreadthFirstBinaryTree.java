@@ -25,20 +25,40 @@
  *************************************************************************
  */
 package macplacer;
-import	java.util.List;
+import static macplacer.Util.invariant;
+import	java.util.Queue;
+import	java.util.LinkedList;
 
-public class ClusterNode extends BinaryTree<Instance> {
-	public ClusterNode(List<Instance> eles) {
+/**
+ * A BinaryTree which overrides add to implement breadth-first (level-order).
+ * @author karl
+ * @param <T>
+ */
+public class BreadthFirstBinaryTree<T> extends BinaryTree<T> {
+	public BreadthFirstBinaryTree() {}
+
+	public BreadthFirstBinaryTree(T... eles) {
 		super(eles);
 	}
 
-	public double getArea() {
-		DoubleValue area = new DoubleValue();
-		super.preorder(new BinaryTreeNodeVisitorWithData<Instance,DoubleValue>(area) {
-			public void visit(Instance data) {
-				m_userData.val += data.getLibCell().getArea();
+	@Override
+	public void add(T data) {
+		Node added = null;
+		if (m_fifo.isEmpty()) {
+			added = super.setRoot(data);
+		} else {
+			Node node = m_fifo.peek();
+			invariant(!node.hasRight());
+			if (!node.hasLeft()) {
+				added = node.setLeft(data);
+			} else {
+				added = node.setRight(data);
+				m_fifo.remove();	//pop
 			}
-		});
-		return area.val;
+		}
+		m_fifo.add(added);
 	}
+	
+	private Queue<Node>	m_fifo = new LinkedList<Node>();
 }
+

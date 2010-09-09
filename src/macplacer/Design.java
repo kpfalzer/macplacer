@@ -25,6 +25,7 @@
  *************************************************************************
  */
 package macplacer;
+import	macplacer.geom.Rectangle;
 import	macplacer.geom.Dimension;
 import static macplacer.Util.error;
 import  java.io.IOException;
@@ -32,6 +33,7 @@ import	java.io.FileInputStream;
 import	java.util.HashMap;
 import	java.util.ArrayList;
 import	java.util.List;
+import macplacer.geom.Contour;
 import	org.xml.sax.Attributes;
 import	org.xml.sax.SAXException;
 import  org.xml.sax.XMLReader;
@@ -60,17 +62,17 @@ public class Design {
 		} catch (Exception ex) {
 			error(ex);
 		}
-		Algorithm algo = new DefaultAlgorithm();
-		Cluster cluster = algo.getClusters(des);
-		cluster.getNodeCount();
+		Algorithm algo = new DefaultAlgorithm(des);
+		algo.getInitialPackingTree();
+		PackingTree packTree = algo.getPackingTree();
 	}
 
 	public List<Instance> getInstances() {
 		return m_instances;
 	}
 
-	public Dimension getFplanDimension() {
-		return m_fplanDim;
+	public Rectangle getFplan() {
+		return m_fplan;
 	}
 
 	private void initialize() {
@@ -80,7 +82,7 @@ public class Design {
 	private HashMap<String,LibCell>	m_libCellsByName = new HashMap<String, LibCell>();
 	private List<Instance>			m_instances = new ArrayList<Instance>(100);
 	private String					m_designName;
-	private	Dimension				m_fplanDim;
+	private	Rectangle				m_fplan;
 	public final static String		stHierSep = "/";
 
 	private class MyContentHandler implements ContentHandler {
@@ -94,7 +96,7 @@ public class Design {
 				m_designName = atts.getValue("name");
 				double width =  Double.parseDouble(atts.getValue("width"));
 				double height = Double.parseDouble(atts.getValue("height"));
-				m_fplanDim = new Dimension(width,height);
+				m_fplan = new Rectangle(new Dimension(width,height));
 			} else if (qName.equals("lib")) {
 				m_state = LIB;
 			} else if ((LIB == m_state) && qName.equals("cell")) {

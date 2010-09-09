@@ -25,24 +25,30 @@
  *************************************************************************
  */
 package macplacer;
-import	java.util.List;
+import static macplacer.Util.invariant;
+import	macplacer.geom.Corner;
+import	java.util.Iterator;
 import	java.util.ArrayList;
 import	java.util.Comparator;
 import	java.util.Collection;
 import	java.util.HashMap;
+import	java.util.Arrays;
 
 /**
  * Default algorithm.
  * @author karl
  */
-public class DefaultAlgorithm implements Algorithm {
+public class DefaultAlgorithm extends Algorithm {
+	public DefaultAlgorithm(Design design) {
+		super(design);
+	}
 	/**
-	 * Cluster macros which share the longest instance name prefix.
+	 * PackingTree macros which share the longest instance name prefix.
 	 * @param desgn design containing macros.
-	 * @return un-ordered list of clusters.
+	 * @param maxPacks maximum number of packing trees.
 	 */
-	public Cluster getClusters(Design desgn) {
-		Graph g = Util.measureCommonPrefix(desgn.getInstances(), Design.stHierSep);
+	public void getInitialPackingTree() {
+		Graph g = Util.measureCommonPrefix(m_design.getInstances(), Design.stHierSep);
 		g.sortEdgesDescending(new Comparator<Integer>() {
 			public int compare(Integer o1, Integer o2) {
 				return o1.compareTo(o2);
@@ -51,7 +57,7 @@ public class DefaultAlgorithm implements Algorithm {
 		/*DBG*/System.out.println(g.toString());
 		Collection<Graph.Edge<Instance,Integer>> edges = g.getEdges();
 		HashMap<Instance,Integer> mapToCluster = new HashMap<Instance,Integer>();
-		ArrayList<Lcluster> clusters = new ArrayList<Lcluster>(10);
+		ArrayList<Cluster> clusters = new ArrayList<Cluster>(10);
 		/*
 		 * Visit every edge and put nodes into same cluster.
 		 */
@@ -65,10 +71,10 @@ public class DefaultAlgorithm implements Algorithm {
 				}
 				key = null;
 			}
-			Lcluster useCluster = null;
+			Cluster useCluster = null;
 			int mapIx = -1;	//index into cluster
 			if (null == key) {	//start new cluster
-				useCluster = new Lcluster();
+				useCluster = new Cluster();
 				key = nodes[0].getVal();	//just pick one
 				useCluster.add(key);
 				mapIx = clusters.size();
@@ -90,11 +96,11 @@ public class DefaultAlgorithm implements Algorithm {
 		 * Visit all nodes and add any un-clustered ones to together in
 		 * new cluster.
 		 */
-		Lcluster miscCluster = null;
-		for (Instance inst : desgn.getInstances()) {
+		Cluster miscCluster = null;
+		for (Instance inst : m_design.getInstances()) {
 			if (!mapToCluster.containsKey(inst)) {
 				if (null == miscCluster) {
-					miscCluster = new Lcluster();
+					miscCluster = new Cluster();
 					clusters.add(miscCluster);
 				}
 				miscCluster.add(inst);
@@ -102,33 +108,61 @@ public class DefaultAlgorithm implements Algorithm {
 		}
 		clusters.trimToSize();
 		/*DBG*/ System.out.println(clusters.toString());
-		m_clusters = toCluster(clusters);
-		return m_clusters;
+		invariant(m_maxPacks >= clusters.size());
+		initialize(clusters);
 	}
 
-	private Cluster	m_clusters;
+	public void iterate() {
+		//TODO
+		m_iteration++;
+	}
 
 	/**
-	 * Return binary tree of clusters.
-	 * @param clusters list of Lcluster.
-	 * @return binary tree representation of clusters.
+	 * Create initial packing tree.
+	 * @param clusters cluster per corner.
 	 */
-	private Cluster toCluster(ArrayList<Lcluster> clist) {
-		ArrayList<ClusterNode> clusters = new ArrayList<ClusterNode>(clist.size());
-		for (Lcluster c : clist) {
-			ClusterNode clust = c.toNode();
-			clusters.add(clust);
+	private void initialize(Iterable<Cluster> clusters) {
+		/*
+		 * Pack starting from lower-left corner, proceeding in a
+		 * counter-clockwise order.
+		 */
+		m_packing = new PackingTree();
+		Iterator<Corner> contour = super.m_design.getFplan().getContourIterator().iterator();
+		for (Cluster cluster : clusters) {
+			assert(contour.hasNext());
+			Corner corner = contour.next();
+			initialize(cluster,corner);
 		}
-		Cluster rval = new Cluster(clusters);
-		return rval;
+	}
+
+	/**
+	 * Create initial packing for corner.
+	 * @param cluster to pack (together).
+	 * @param cornerOffset offset from LL to packing corner.
+	 * @return initial packing.
+	 */
+	private void initialize(Cluster cluster, Corner cornerOffset) {
+		Instance sorted[] = new Instance[cluster.size()];
+		//Sort in ascending order.
+		cluster.toArray(sorted);
+		Arrays.sort(sorted, new Comparator<Instance>() {
+			public int compare(Instance o1, Instance o2) {
+				double area[] = {o1.getDimension().getArea(),o2.getDimension().getArea()};
+				return (area[0] < area[1]) ? -1 : ((area[0] > area[1]) ? 1 : 0);
+			}
+		});
+		/*
+		 * Add nodes in level-order from array to tree.
+		 */
+		Packing packn = new Packing(sorted);
+		super.addPacking(packn, cornerOffset);
 	}
 
 	/**
 	 * Group of macro instances to be clustered.
 	 * @author karl
 	 */
-	private class Lcluster extends ArrayList<Instance> {
-	
+	private class Cluster extends ArrayList<Instance> {
 		@Override
 		public String toString() {
 			StringBuilder buf = new StringBuilder(getClass().getName()+":\n");
@@ -137,14 +171,6 @@ public class DefaultAlgorithm implements Algorithm {
 				buf.append(pfx).append(inst.getName()).append('\n');
 			}
 			return buf.toString();
-		}
-	
-		/**
-		 * Convert to left-biased binary tree (i.e., only left children are present).
-		 * @return binary tree representation.
-		 */
-		public ClusterNode toNode() {
-			return new ClusterNode(this);
 		}
 	};
 };

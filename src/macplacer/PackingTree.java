@@ -25,14 +25,11 @@
  *************************************************************************
  */
 package macplacer;
-import	java.util.List;
 
 /**
  * Group of macro instances to be clustered.
  * @author karl
  */
-public class Cluster extends BinaryTree<ClusterNode> {
-	public Cluster(List<ClusterNode> clist) {
-		super(clist);
-	}
+public class PackingTree extends BinaryTree<Packing> {
+	public PackingTree() {}
 };

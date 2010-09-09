@@ -24,58 +24,63 @@
  *************************************************************************
  *************************************************************************
  */
-package macplacer;
-import	macplacer.geom.Corner;
+package macplacer.geom;
+
+import	java.util.Iterator;
+import	java.util.ArrayList;
 
 /**
- * Base class for macro placer algorithm.
+ * Iterate contour in a counter-clockwise direction starting from lower-left corner.
  * @author karl
  */
-public abstract class Algorithm {
-	/**
-	 * Create base algorithm.
-	 */
-	protected Algorithm(Design design) {
-		m_design = design;
-		for (Corner corner : m_design.getFplan().getContourIterator()) {
-			m_maxPacks++;
+public class Contour implements Iterable<Corner> {
+
+	public Contour(Rectangle rect) {
+		m_iterator = new RectangleContour(rect);
+	}
+
+	public Iterator<Corner> iterator() {
+		return m_iterator;
+	}
+
+	private Iterator<Corner> m_iterator;
+
+	public static class RectangleContour implements Iterator<Corner> {
+		public RectangleContour(Rectangle rectangle) {
+			m_rectangle = rectangle;
+			initialize();
 		}
-	}
-	/**
-	 * Create initial packing tree.
-	 */
-	public abstract void getInitialPackingTree();
 
-	/**
-	 * Create another packing tree by perturbing current one.
-	 */
-	public abstract void iterate();
+		public boolean hasNext() {
+			return m_iter.hasNext();
+		}
 
-	public PackingTree getPackingTree() {
-		return m_packing;
-	}
-	
-	/**
-	 * Set coordinates based on cornerOffset and add to packing tree
-	 * @param pack packing to add.
-	 * @param cornerOffset corner offset.
-	 */
-	protected void addPacking(Packing pack, Corner cornerOffset) {
-		//TODO: add coordinates
-		m_packing.add(pack);
-	}
+		public Corner next() {
+			return m_iter.next();
+		}
 
-	/**
-	 * Iteration.
-	 */
-	protected int	m_iteration = 0;
-	/**
-	 * Maximum/preferred number of packs.
-	 */
-	protected int	m_maxPacks = 0;
-	/**
-	 * Current packing.
-	 */
-	protected PackingTree	m_packing;
-	protected Design		m_design;
-};
+		public void remove() {
+			throw new UnsupportedOperationException("Invalid operation.");
+		}
+
+		private void initialize() {
+			double x = 0, y = 0;
+			addCorner(x, y, Corner.ECorner.eLowerLeft);
+			x = m_rectangle.getWidth();
+			addCorner(x, y, Corner.ECorner.eLowerRight);
+			y = m_rectangle.getHeight();
+			addCorner(x, y, Corner.ECorner.eUpperRight);
+			x = 0;
+			addCorner(x, y, Corner.ECorner.eUpperLeft);
+			m_iter = m_contour.iterator();
+		}
+
+		private void addCorner(double x, double y, Corner.ECorner corner) {
+			m_contour.add(new Corner(x, y, corner));
+		}
+
+		private final Rectangle		m_rectangle;
+		private ArrayList<Corner>	m_contour = new ArrayList<Corner>(4);
+		private Iterator<Corner>	m_iter;
+	}
+}

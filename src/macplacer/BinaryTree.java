@@ -25,7 +25,6 @@
  *************************************************************************
  */
 package macplacer;
-import	java.util.List;
 
 /**
  *
@@ -42,22 +41,41 @@ public class BinaryTree<T> {
 	 * @param root root node.
 	 */
 	public BinaryTree(T root) {
-		m_root = new Node<T>(root);
+		setRoot(root);
+	}
+
+	public BinaryTree(BinaryTree root) {
+		m_root = root.m_root;
 	}
 
 	/**
-	 * Create left-biased (only left children used) binary tree.
-	 * @param list of elements.
+	 * Create tree using add method (to impose any order).
+	 * @param collection of elements.
 	 */
-	public BinaryTree(List<T> eles) {
-		if (eles.isEmpty()) {
-			return;
+	public BinaryTree(T... eles) {
+		for (T ele : eles) {
+			add(ele);
 		}
-		m_root = new Node(eles.get(0));
-		Node<T> last = getRoot();
-		for (int i = 1; i < eles.size(); i++) {
-			last.setLeft(eles.get(i));
-			last = last.getLeft();
+	}
+
+	public final Node setRoot(T root) {
+		m_root = new Node<T>(root);
+		return m_root;
+	}
+
+	/**
+	 * Add new node in preorder (depth first).
+	 * @param data node to add.
+	 */
+	public void add(T data) {
+		if (isEmpty()) {
+			setRoot(data);
+		} else {
+			Node last = getRoot();
+			while (last.hasLeft()) {
+				last = last.getLeft();
+			}
+			last.setLeft(last);
 		}
 	}
 
@@ -121,14 +139,16 @@ public class BinaryTree<T> {
 			return m_data;
 		}
 
-		public final void setLeft(T ele) {
+		public final Node setLeft(T ele) {
 			assert(null == m_left);
 			m_left = new Node(ele);
+			return m_left;
 		}
 
-		public final void setRight(T ele) {
+		public final Node setRight(T ele) {
 			assert(null == m_right);
 			m_right = new Node(ele);
+			return m_right;
 		}
 
 		public Node getLeft() {
@@ -151,32 +171,3 @@ public class BinaryTree<T> {
 		private Node	m_left, m_right;
 	}
 }
-
-/**
- * Interface for binary tree node visitor.
- * @author karl
- * @param <N> node type.
- */
-interface BinaryTreeNodeVisitor<N> {
-	/**
-	 * Callback during binary tree traversal/visits.
-	 * @param node current node being traversed.
-	 */
-	public void visit(N node);
-}
-
-/**
- * Extends binary tree node visitor to add user data.
- * @author karl
- * @param <N> node type.
- * @param <T> user data type.
- */
-abstract class BinaryTreeNodeVisitorWithData<N,T>
-		implements BinaryTreeNodeVisitor<N> {
-	public BinaryTreeNodeVisitorWithData(T userData) {
-		m_userData = userData;
-	}
-	protected T	m_userData;
-}
-
-

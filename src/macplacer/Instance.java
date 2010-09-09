@@ -54,7 +54,7 @@ public class Instance {
 	public String toString() {
 		return m_name;
 	}
-	
+
 	private final String	m_name;
 	private final LibCell	m_ref;
 }

@@ -29,7 +29,6 @@ import  java.util.Arrays;
 import	java.util.List;
 import	java.util.StringTokenizer;
 import	java.util.ArrayList;
-import	java.util.Collection;
 
 /**
  *
@@ -113,6 +112,14 @@ public class Util {
 
 	public static <T> List<T> toList(T ar[]) {
 		return Arrays.asList(ar);
+	}
+
+	public static void invariant(boolean cond) {
+		if (!cond) {
+			System.err.println("Invariant failed:");
+			Thread.dumpStack();
+			System.exit(1);
+		}
 	}
 
 }

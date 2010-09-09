@@ -69,6 +69,10 @@ public class Rectangle extends Rectangle2D.Double {
 		return new Dimension(getWidth(), getHeight());
 	}
 
+	public Iterable<Corner> getContourIterator() {
+		return new Contour(this);
+	}
+
 	/**
 	 * Rotate given orientation and translate to draw orientation.
 	 * @param lowerLeft lower-left (origin) of basic orientation.
@@ -84,6 +88,11 @@ public class Rectangle extends Rectangle2D.Double {
 		setCoordinates(lowerLeft, dimension);
 	}
 
+	public void setLowerLeft(Point lowerLeft) {
+		super.x = lowerLeft.getX();
+		super.y = lowerLeft.getY();
+	}
+
 	/**
 	 * Set coordinates.
 	 * @param lowerLeft lower-left corner of rectangle.
@@ -92,7 +101,6 @@ public class Rectangle extends Rectangle2D.Double {
 	private void setCoordinates(Point lowerLeft, Dimension dimension) {
 		super.width = dimension.getWidth();
 		super.height = dimension.getHeight();
-		super.x = lowerLeft.getX();
-		super.y = lowerLeft.getY();
+		setLowerLeft(lowerLeft);
 	}
 }

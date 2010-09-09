@@ -24,58 +24,43 @@
  *************************************************************************
  *************************************************************************
  */
-package macplacer;
-import	macplacer.geom.Corner;
+package macplacer.geom;
 
 /**
- * Base class for macro placer algorithm.
+ * Corner objects indicates offset from (0,0) wrt. indicated corner.
  * @author karl
  */
-public abstract class Algorithm {
-	/**
-	 * Create base algorithm.
-	 */
-	protected Algorithm(Design design) {
-		m_design = design;
-		for (Corner corner : m_design.getFplan().getContourIterator()) {
-			m_maxPacks++;
-		}
+public class Corner extends Point {
+	public static enum ECorner {
+		eLowerLeft, eLowerRight, eUpperLeft, eUpperRight
 	}
-	/**
-	 * Create initial packing tree.
-	 */
-	public abstract void getInitialPackingTree();
 
-	/**
-	 * Create another packing tree by perturbing current one.
-	 */
-	public abstract void iterate();
-
-	public PackingTree getPackingTree() {
-		return m_packing;
+	public Corner(double x, double y) {
+		this(x, y, ECorner.eLowerLeft, true);
 	}
-	
-	/**
-	 * Set coordinates based on cornerOffset and add to packing tree
-	 * @param pack packing to add.
-	 * @param cornerOffset corner offset.
-	 */
-	protected void addPacking(Packing pack, Corner cornerOffset) {
-		//TODO: add coordinates
-		m_packing.add(pack);
+
+	public Corner(double x, double y, ECorner corner) {
+		this(x, y, corner, true);
+	}
+
+	public Corner(double x, double y, ECorner corner, boolean concave) {
+		super(x, y);
+		m_corner = corner;
+		m_concave = true;
+	}
+
+	public ECorner getCorner() {
+		return m_corner;
 	}
 
 	/**
-	 * Iteration.
+	 * Corner is 90deg concave (as opposed to 270deg convex).
+	 * @return true if corner is 90deg (concave).
 	 */
-	protected int	m_iteration = 0;
-	/**
-	 * Maximum/preferred number of packs.
-	 */
-	protected int	m_maxPacks = 0;
-	/**
-	 * Current packing.
-	 */
-	protected PackingTree	m_packing;
-	protected Design		m_design;
-};
+	public boolean isConcave() {
+		return m_concave;
+	}
+
+	private final ECorner m_corner;
+	private final boolean m_concave;
+}
