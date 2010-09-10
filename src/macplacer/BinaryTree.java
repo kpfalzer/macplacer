@@ -30,7 +30,7 @@ import  java.util.List;
 import  java.util.Queue;
 
 /**
- *
+ * A binary tree structure with links to parent node too.
  * @author karl
  */
 public class BinaryTree<T> {
@@ -62,7 +62,7 @@ public class BinaryTree<T> {
 	}
 
 	public final Node<T> setRoot(T root) {
-		m_root = new Node<T>(root);
+		m_root = new Node<T>(root, null);
 		return m_root;
 	}
 
@@ -157,14 +157,9 @@ public class BinaryTree<T> {
 	private Node<T>	m_root = null;
 
 	public static class Node<T> {
-		public Node(T data) {
+		public Node(T data, Node parent) {
 			m_data = data;
-		}
-
-		public Node(T data, T left, T right) {
-			this(data);
-			setLeft(left);
-			setRight(right);
+            m_parent = parent;
 		}
 
 		public void preOrder(BinaryTreeNodeVisitor<T> callback) {
@@ -183,13 +178,13 @@ public class BinaryTree<T> {
 
 		public final Node<T> setLeft(T ele) {
 			assert(null == m_left);
-			m_left = new Node(ele);
+			m_left = new Node(ele, this);
 			return m_left;
 		}
 
 		public final Node<T> setRight(T ele) {
 			assert(null == m_right);
-			m_right = new Node(ele);
+			m_right = new Node(ele, this);
 			return m_right;
 		}
 
@@ -201,6 +196,10 @@ public class BinaryTree<T> {
 			return m_right;
 		}
 
+        public Node<T> getParent() {
+            return m_parent;
+        }
+
 		public boolean hasLeft() {
 			return (null != m_left);
 		}
@@ -210,6 +209,6 @@ public class BinaryTree<T> {
 		}
 
 		private final T	m_data;
-		private Node<T>	m_left, m_right;
+		private Node<T>	m_left, m_right, m_parent;
 	}
 }
