@@ -89,8 +89,12 @@ public class Rectangle extends Rectangle2D.Double {
 	}
 
 	public void setLowerLeft(Point lowerLeft) {
-		super.x = lowerLeft.getX();
-		super.y = lowerLeft.getY();
+		setLowerLeft(lowerLeft.getX(),lowerLeft.getY());
+	}
+
+	public void setLowerLeft(double x, double y) {
+		super.x = x;
+		super.y = y;
 	}
 
 	/**

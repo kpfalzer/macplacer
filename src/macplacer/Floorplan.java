@@ -42,11 +42,11 @@ public class Floorplan {
 		return m_bbox;
 	}
 
-	public void addPlaced(Placed item) {
-		m_placed.add(item);
+	public void addPlaced(Iterable<Placed> placed) {
+		m_placed = placed;
 	}
 
-	public LinkedList<Placed> getPlaced() {
+	public Iterable<Placed> getPlaced() {
 		return m_placed;
 	}
 
@@ -54,5 +54,5 @@ public class Floorplan {
 	 * Floorplan bounding box (in drawing space).
 	 */
 	private final Rectangle		m_bbox;
-	private LinkedList<Placed>	m_placed = new LinkedList<Placed>();
+	private Iterable<Placed>	m_placed;
 }

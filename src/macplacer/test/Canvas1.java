@@ -8,6 +8,8 @@ import	macplacer.geom.Canvas;
 import	macplacer.geom.Dimension;
 import	macplacer.Floorplan;
 import	macplacer.Design;
+import  macplacer.Algorithm;
+import  macplacer.DefaultAlgorithm;
 import	macplacer.Instance;
 import	macplacer.Placed;
 import static macplacer.Util.error;
@@ -27,11 +29,10 @@ public class Canvas1 {
 		} catch (Exception ex) {
 			error(ex);
 		}
-		Instance inst = cnvs.m_design.getInstances().get(0);
-		Placed placed = new Placed(inst);//,new Point (800,600));
-		Dimension dmsn = cnvs.m_design.getFplan().getDimension();
-		cnvs.m_fplan = new Floorplan(dmsn);
-		cnvs.m_fplan.addPlaced(placed);
+		Algorithm algo = new DefaultAlgorithm(cnvs.m_design);
+		algo.getInitialPackingTree();
+        algo.updateFloorplan();
+		cnvs.m_fplan = cnvs.m_design.getFplan();
 		SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 cnvs.createAndShowGUI();

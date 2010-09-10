@@ -25,6 +25,9 @@
  *************************************************************************
  */
 package macplacer;
+import  java.util.LinkedList;
+import  java.util.List;
+import  java.util.Queue;
 
 /**
  *
@@ -58,7 +61,7 @@ public class BinaryTree<T> {
 		}
 	}
 
-	public final Node setRoot(T root) {
+	public final Node<T> setRoot(T root) {
 		m_root = new Node<T>(root);
 		return m_root;
 	}
@@ -75,7 +78,7 @@ public class BinaryTree<T> {
 			while (last.hasLeft()) {
 				last = last.getLeft();
 			}
-			last.setLeft(last);
+			last.setLeft(data);
 		}
 	}
 
@@ -85,13 +88,29 @@ public class BinaryTree<T> {
 	 */
 	public int getNodeCount() {
 		IntegerValue cnt = new IntegerValue();
-		preorder(new BinaryTreeNodeVisitorWithData<T,IntegerValue>(cnt) {
+		preOrder(new BinaryTreeNodeVisitorWithData<T,IntegerValue>(cnt) {
 			public void visit(T data) {
 				m_userData.val++;
 			}
 		});
 		return cnt.val;
 	}
+
+    /**
+     * Return tree as list in level-order.
+     * @return level-order (breadth-first) tree elements.
+     */
+    public List<T> asList() {
+        List<T> list = new LinkedList<T>();
+        levelOrder(new BinaryTreeNodeVisitorWithData<T, List<T>>(list) {
+
+            public void visit(T node) {
+                m_userData.add(node);
+            }
+
+        });
+        return list;
+    }
 
 	public boolean isEmpty() {
 		return (null == m_root);
@@ -102,14 +121,37 @@ public class BinaryTree<T> {
 	}
 
 	/**
-	 * Depth-first (preorder) traversal.
-	 * Preorder is root, left-subtree, right-subtree.
+	 * Depth-first (pre-order) traversal.
+	 * Pre-order is root, left-subtree, right-subtree.
 	 * @param callback execute for each node during traversal.
 	 */
-	public void preorder(BinaryTreeNodeVisitor<T> callback) {
+	public void preOrder(BinaryTreeNodeVisitor<T> callback) {
 		if (null != m_root) {
-			m_root.preorder(callback);
+			m_root.preOrder(callback);
 		}
+	}
+
+	/**
+	 * Breadth-first (level-order) traversal.
+	 * @param callback execute for each node during traversal.
+	 */
+	public void levelOrder(BinaryTreeNodeVisitor<T> callback) {
+		if (isEmpty()) {
+            return;
+        }
+        Queue<Node<T>> queue = new LinkedList<Node<T>>();
+        queue.add(m_root);
+        while (!queue.isEmpty()) {
+            Node<T> node = queue.peek();
+            callback.visit(node.getData());
+            if (node.hasLeft()) {
+                queue.add(node.getLeft());
+            }
+            if (node.hasRight()) {
+                queue.add(node.getRight());
+            }
+            queue.remove();
+        }
 	}
 
 	private Node<T>	m_root = null;
@@ -125,13 +167,13 @@ public class BinaryTree<T> {
 			setRight(right);
 		}
 
-		public void preorder(BinaryTreeNodeVisitor<T> callback) {
+		public void preOrder(BinaryTreeNodeVisitor<T> callback) {
 			callback.visit(getData());
 			if (null != getLeft()) {
-				getLeft().preorder(callback);
+				getLeft().preOrder(callback);
 			}
 			if (null != getRight()) {
-				getRight().preorder(callback);
+				getRight().preOrder(callback);
 			}
 		}
 
@@ -139,23 +181,23 @@ public class BinaryTree<T> {
 			return m_data;
 		}
 
-		public final Node setLeft(T ele) {
+		public final Node<T> setLeft(T ele) {
 			assert(null == m_left);
 			m_left = new Node(ele);
 			return m_left;
 		}
 
-		public final Node setRight(T ele) {
+		public final Node<T> setRight(T ele) {
 			assert(null == m_right);
 			m_right = new Node(ele);
 			return m_right;
 		}
 
-		public Node getLeft() {
+		public Node<T> getLeft() {
 			return m_left;
 		}
 
-		public Node getRight() {
+		public Node<T> getRight() {
 			return m_right;
 		}
 
@@ -168,6 +210,6 @@ public class BinaryTree<T> {
 		}
 
 		private final T	m_data;
-		private Node	m_left, m_right;
+		private Node<T>	m_left, m_right;
 	}
 }

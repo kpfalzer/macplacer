@@ -64,14 +64,13 @@ public class Design {
 		}
 		Algorithm algo = new DefaultAlgorithm(des);
 		algo.getInitialPackingTree();
-		PackingTree packTree = algo.getPackingTree();
 	}
 
 	public List<Instance> getInstances() {
 		return m_instances;
 	}
 
-	public Rectangle getFplan() {
+	public Floorplan getFplan() {
 		return m_fplan;
 	}
 
@@ -82,7 +81,7 @@ public class Design {
 	private HashMap<String,LibCell>	m_libCellsByName = new HashMap<String, LibCell>();
 	private List<Instance>			m_instances = new ArrayList<Instance>(100);
 	private String					m_designName;
-	private	Rectangle				m_fplan;
+	private	Floorplan				m_fplan;
 	public final static String		stHierSep = "/";
 
 	private class MyContentHandler implements ContentHandler {
@@ -96,7 +95,7 @@ public class Design {
 				m_designName = atts.getValue("name");
 				double width =  Double.parseDouble(atts.getValue("width"));
 				double height = Double.parseDouble(atts.getValue("height"));
-				m_fplan = new Rectangle(new Dimension(width,height));
+				m_fplan = new Floorplan(new Dimension(width,height));
 			} else if (qName.equals("lib")) {
 				m_state = LIB;
 			} else if ((LIB == m_state) && qName.equals("cell")) {

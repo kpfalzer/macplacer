@@ -25,11 +25,29 @@
  *************************************************************************
  */
 package macplacer;
+import  java.util.LinkedList;
+import  java.util.List;
 
 /**
- * Group of macro instances to be clustered.
+ * Collection of "per-corner" locally optimized Packing.
  * @author karl
  */
 public class PackingTree extends BinaryTree<Packing> {
 	public PackingTree() {}
+
+    /**
+     * Get placed objects in no (guaranteed) particular order.
+     * @return list of placed objects.
+     */
+    public List<Placed> getPlaced() {
+        List<Placed>  placed = new LinkedList();
+        for (Packing packing : super.asList()) {
+            for (Placed i : packing.asList()) {
+                if (i.isPlaced()) {
+                    placed.add(i);
+                }
+            }
+        }
+        return placed;
+    }
 };

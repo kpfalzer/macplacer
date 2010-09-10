@@ -27,6 +27,7 @@
 package macplacer;
 import  java.util.Arrays;
 import	java.util.List;
+import  java.util.LinkedList;
 import	java.util.StringTokenizer;
 import	java.util.ArrayList;
 
@@ -121,5 +122,4 @@ public class Util {
 			System.exit(1);
 		}
 	}
-
 }

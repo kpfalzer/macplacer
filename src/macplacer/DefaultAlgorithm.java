@@ -127,7 +127,7 @@ public class DefaultAlgorithm extends Algorithm {
 		 * counter-clockwise order.
 		 */
 		m_packing = new PackingTree();
-		Iterator<Corner> contour = super.m_design.getFplan().getContourIterator().iterator();
+		Iterator<Corner> contour = super.m_design.getFplan().getBoundingBox().getContourIterator().iterator();
 		for (Cluster cluster : clusters) {
 			assert(contour.hasNext());
 			Corner corner = contour.next();
@@ -155,8 +155,78 @@ public class DefaultAlgorithm extends Algorithm {
 		 * Add nodes in level-order from array to tree.
 		 */
 		Packing packn = new Packing(sorted);
-		super.addPacking(packn, cornerOffset);
+		addPacking(packn, cornerOffset);
 	}
+
+    /**
+     * Place macros wrt corner. (see dac07-macro.pdf paper.)
+     *
+     * If node nj is the right child of ni , the block bj is
+     *  • the lowest adjacent block on the right with xj = xi + wi
+     *      for BL-packing,
+     *  • the highest adjacent block on the right with xj = xi + wi
+     *      for TL-packing,
+     *  • the highest adjacent block on the left with xj = xi − wj for
+     *      TR-packing, and
+     *  • the lowest adjacent block on the left with xj = xi − wj for
+     *      BR-packing.
+     *
+     *  If node nj is the left child of ni , the block bj is
+     *  • the first block above bi with xj = xi for BL-packing,
+     *  • the first block below bi with xj = xi for TL-packing,
+     *  • the first block below bi with xj = xi + wi − wj for TR-packing, and
+     *  • the first block above bi with xj = xi + wi − wj for BR-packing.
+     *
+     * @param pack (relative) packed macros.
+     * @param cornerOffset corner offset.
+     */
+    private void addPacking(Packing pack, Corner cornerOffset) {
+        PackData data = new PackData(cornerOffset);
+        pack.levelOrder(new BinaryTreeNodeVisitorWithData<Placed,PackData>(data) {
+            public void visit(Placed node) {
+                m_userData.pack(node);
+            }
+        });
+        super.m_packing.add(pack);
+    }
+    /**
+     * Surrogate class for addPacking.
+     */
+    private static class PackData {
+        PackData(Corner cornerOffset) {
+            m_cornerOffset = cornerOffset;
+        }
+        void pack(Placed node) {
+            double x = m_cornerOffset.getX();
+            double y = m_cornerOffset.getY();
+            if (0 == m_nodeCnt) {   //is root
+                //TODO: consider concave/convex
+                switch(m_cornerOffset.getCorner()) {
+                    case eLowerLeft:
+                        //do nothing: (0,0)
+                        break;
+                    case eLowerRight:
+                        x -= node.getWidth();
+                        break;
+                    case eUpperRight:
+                        x -= node.getWidth();
+                        y -= node.getHeight();
+                        break;
+                    case eUpperLeft:
+                        y -= node.getHeight();
+                        break;
+                    default:
+                        invariant(false);
+                }
+            } else {
+                x = y = -1.0;  //TODO
+            }
+            node.setLowerLeft(x, y);
+            m_nodeCnt++;
+        }
+        private final Corner    m_cornerOffset;
+        private int             m_nodeCnt = 0;
+    }
 
 	/**
 	 * Group of macro instances to be clustered.

@@ -26,6 +26,7 @@
  */
 package macplacer;
 import	macplacer.geom.Corner;
+import macplacer.geom.Point;
 
 /**
  * Base class for macro placer algorithm.
@@ -37,7 +38,7 @@ public abstract class Algorithm {
 	 */
 	protected Algorithm(Design design) {
 		m_design = design;
-		for (Corner corner : m_design.getFplan().getContourIterator()) {
+		for (Corner corner : m_design.getFplan().getBoundingBox().getContourIterator()) {
 			m_maxPacks++;
 		}
 	}
@@ -51,20 +52,14 @@ public abstract class Algorithm {
 	 */
 	public abstract void iterate();
 
-	public PackingTree getPackingTree() {
-		return m_packing;
-	}
+    /**
+     * Update placements in floorplan.
+     * This method must be called after any packing tree updates.
+     */
+    public void updateFloorplan() {
+        m_design.getFplan().addPlaced(m_packing.getPlaced());
+    }
 	
-	/**
-	 * Set coordinates based on cornerOffset and add to packing tree
-	 * @param pack packing to add.
-	 * @param cornerOffset corner offset.
-	 */
-	protected void addPacking(Packing pack, Corner cornerOffset) {
-		//TODO: add coordinates
-		m_packing.add(pack);
-	}
-
 	/**
 	 * Iteration.
 	 */
