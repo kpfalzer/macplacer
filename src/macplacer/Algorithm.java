@@ -26,7 +26,7 @@
  */
 package macplacer;
 import	macplacer.geom.Corner;
-import macplacer.geom.Point;
+import static macplacer.Util.invariant;
 
 /**
  * Base class for macro placer algorithm.
@@ -55,9 +55,28 @@ public abstract class Algorithm {
     /**
      * Update placements in floorplan.
      * This method must be called after any packing tree updates.
+     * However, since this method is only useful for displaying floorplan
+     * it can be skipped during iterations.
      */
     public void updateFloorplan() {
-        m_design.getFplan().addPlaced(m_packing.getPlaced());
+        invariant(1 > m_placedAndUnplaced.getUnplaced().size());
+        m_design.getFplan().addPlaced(m_placedAndUnplaced.getPlaced());
+    }
+
+    /**
+     * Check for overlaps.
+     * @return number of overlaps.
+     */
+    public int checkForOverlaps() {
+        int overlaps = 0;
+        for (Placed p1 : m_placedAndUnplaced.getPlaced()) {
+            for (Placed p2 : m_placedAndUnplaced.getPlaced()) {
+                if (!p1.equals(p2) && p1.intersects(p2)) {
+                    overlaps++;
+                }
+            }
+        }
+        return overlaps;
     }
 	
 	/**
@@ -73,4 +92,6 @@ public abstract class Algorithm {
 	 */
 	protected PackingTree	m_packing;
 	protected Design		m_design;
+
+    protected PackingTree.PlacedAndUnplaced m_placedAndUnplaced;
 };

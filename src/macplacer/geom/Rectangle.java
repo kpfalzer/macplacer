@@ -97,6 +97,21 @@ public class Rectangle extends Rectangle2D.Double {
 		super.y = y;
 	}
 
+    /**
+     * Check if two rectangles intersect.
+     * @param rd other rectangle.
+     * @return true if rectangles intersect, otherwise false.
+     */
+    public boolean intersects(Rectangle rd) {
+        boolean xin = anyPointBetween(x, x+width, rd.x, rd.x+rd.width);
+        boolean yin = anyPointBetween(y, y+height, rd.y, rd.y+rd.height);
+        return xin & yin;
+    }
+
+    private boolean anyPointBetween(double p1, double p2, double q1, double q2) {
+        return ((p1>q1 && p1 <q2) || (p2>q1 && p2<q2));
+    }
+
 	/**
 	 * Set coordinates.
 	 * @param lowerLeft lower-left corner of rectangle.

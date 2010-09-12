@@ -27,7 +27,6 @@
 package macplacer;
 import	macplacer.geom.Dimension;
 import	macplacer.geom.Rectangle;
-import	java.util.LinkedList;
 
 /**
  *

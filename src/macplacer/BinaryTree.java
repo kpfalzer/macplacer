@@ -89,7 +89,7 @@ public class BinaryTree<T> {
 	public int getNodeCount() {
 		IntegerValue cnt = new IntegerValue();
 		preOrder(new BinaryTreeNodeVisitorWithData<T,IntegerValue>(cnt) {
-			public void visit(T data) {
+			public void visit(Node node) {
 				m_userData.val++;
 			}
 		});
@@ -104,8 +104,8 @@ public class BinaryTree<T> {
         List<T> list = new LinkedList<T>();
         levelOrder(new BinaryTreeNodeVisitorWithData<T, List<T>>(list) {
 
-            public void visit(T node) {
-                m_userData.add(node);
+            public void visit(Node<T> node) {
+                m_userData.add(node.getData());
             }
 
         });
@@ -143,7 +143,7 @@ public class BinaryTree<T> {
         queue.add(m_root);
         while (!queue.isEmpty()) {
             Node<T> node = queue.peek();
-            callback.visit(node.getData());
+            callback.visit(node);
             if (node.hasLeft()) {
                 queue.add(node.getLeft());
             }
@@ -163,7 +163,7 @@ public class BinaryTree<T> {
 		}
 
 		public void preOrder(BinaryTreeNodeVisitor<T> callback) {
-			callback.visit(getData());
+			callback.visit(this);
 			if (null != getLeft()) {
 				getLeft().preOrder(callback);
 			}
@@ -199,6 +199,28 @@ public class BinaryTree<T> {
         public Node<T> getParent() {
             return m_parent;
         }
+
+		/**
+		 * Check if this node is the left child of its parent.
+		 * @return true if node is left child of parent, else false.
+		 *         Return false if node has no parent.
+		 */
+		public boolean isLeftChild() {
+			return (null == getParent()) ? false : getParent().getLeft().equals(this);
+		}
+		
+		/**
+		 * Check if this node is the right child of its parent.
+		 * @return true if node is right child of parent, else false.
+		 *         Return false if node has no parent.
+		 */
+		public boolean isRightChild() {
+			return (null == getParent()) ? false : getParent().getRight().equals(this);
+		}
+
+		public T getParentData() {
+			return (null == getParent()) ? null : getParent().getData();
+		}
 
 		public boolean hasLeft() {
 			return (null != m_left);

@@ -29,12 +29,13 @@ package macplacer;
 /**
  * Interface for binary tree node visitor.
  * @author karl
- * @param <N> node type.
+ * @param <T> node type.
  */
-public interface BinaryTreeNodeVisitor<N> {
+public interface BinaryTreeNodeVisitor<T> {
 	/**
 	 * Callback during binary tree traversal/visits.
 	 * @param node current node being traversed.
+	 * @param parent parent node or null if node is root.
 	 */
-	public void visit(N node);
+	public void visit(BinaryTree.Node<T> node);
 }

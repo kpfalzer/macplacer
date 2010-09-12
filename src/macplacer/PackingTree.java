@@ -36,18 +36,34 @@ public class PackingTree extends BinaryTree<Packing> {
 	public PackingTree() {}
 
     /**
-     * Get placed objects in no (guaranteed) particular order.
-     * @return list of placed objects.
+     * Get placed and unplaced objects in no (guaranteed) particular order.
+     * @return list of placed and unplaced objects.
      */
-    public List<Placed> getPlaced() {
-        List<Placed>  placed = new LinkedList();
+    public PlacedAndUnplaced getPlacedAndUnplaced() {
+        PlacedAndUnplaced pnu = new PlacedAndUnplaced();
         for (Packing packing : super.asList()) {
             for (Placed i : packing.asList()) {
                 if (i.isPlaced()) {
-                    placed.add(i);
+                    pnu.getPlaced().add(i);
+                } else {
+                    pnu.getUnplaced().add(i);
                 }
             }
         }
-        return placed;
+        return pnu;
+    }
+
+    public static class PlacedAndUnplaced {
+        private PlacedAndUnplaced() {}
+
+        public List<Placed> getPlaced() {
+            return m_pnu.m_ele1;
+        }
+        public List<Placed> getUnplaced() {
+            return m_pnu.m_ele2;
+        }
+
+        private Pair<List<Placed>,List<Placed>> m_pnu = new
+                Pair(new LinkedList<Placed>(), new LinkedList<Placed>());
     }
 };

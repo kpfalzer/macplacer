@@ -110,6 +110,7 @@ public class DefaultAlgorithm extends Algorithm {
 		/*DBG*/ System.out.println(clusters.toString());
 		invariant(m_maxPacks >= clusters.size());
 		initialize(clusters);
+        m_placedAndUnplaced = m_packing.getPlacedAndUnplaced();
 	}
 
 	public void iterate() {
@@ -171,19 +172,13 @@ public class DefaultAlgorithm extends Algorithm {
      *  • the lowest adjacent block on the left with xj = xi − wj for
      *      BR-packing.
      *
-     *  If node nj is the left child of ni , the block bj is
-     *  • the first block above bi with xj = xi for BL-packing,
-     *  • the first block below bi with xj = xi for TL-packing,
-     *  • the first block below bi with xj = xi + wi − wj for TR-packing, and
-     *  • the first block above bi with xj = xi + wi − wj for BR-packing.
-     *
      * @param pack (relative) packed macros.
      * @param cornerOffset corner offset.
      */
     private void addPacking(Packing pack, Corner cornerOffset) {
         PackData data = new PackData(cornerOffset);
         pack.levelOrder(new BinaryTreeNodeVisitorWithData<Placed,PackData>(data) {
-            public void visit(Placed node) {
+            public void visit(BinaryTree.Node<Placed> node) {
                 m_userData.pack(node);
             }
         });
@@ -196,8 +191,9 @@ public class DefaultAlgorithm extends Algorithm {
         PackData(Corner cornerOffset) {
             m_cornerOffset = cornerOffset;
         }
-        void pack(Placed node) {
-            double x = m_cornerOffset.getX();
+        void pack(BinaryTree.Node<Placed> node) {
+            Placed placed = node.getData();
+			double x = m_cornerOffset.getX();
             double y = m_cornerOffset.getY();
             if (0 == m_nodeCnt) {   //is root
                 //TODO: consider concave/convex
@@ -206,22 +202,64 @@ public class DefaultAlgorithm extends Algorithm {
                         //do nothing: (0,0)
                         break;
                     case eLowerRight:
-                        x -= node.getWidth();
+                        x -= placed.getWidth();
                         break;
                     case eUpperRight:
-                        x -= node.getWidth();
-                        y -= node.getHeight();
+                        x -= placed.getWidth();
+                        y -= placed.getHeight();
                         break;
                     case eUpperLeft:
-                        y -= node.getHeight();
+                        y -= placed.getHeight();
                         break;
                     default:
                         invariant(false);
                 }
-            } else {
-                x = y = -1.0;  //TODO
+            } else {	//non-root
+                x = node.getParentData().getX();
+				double parentWidth = node.getParentData().getWidth();
+				y = node.getParentData().getY();
+				double parentHeight = node.getParentData().getHeight();
+				if (node.isLeftChild()) {
+					switch(m_cornerOffset.getCorner()) {
+						case eLowerLeft: //the first block above bi with xj = xi
+							y += parentHeight;
+							break;
+						case eLowerRight: //the first block above bi with xj = xi + wi − wj
+							x += parentWidth - placed.getWidth();
+							y += parentHeight;
+							break;
+						case eUpperRight: //the first block below bi with xj = xi + wi − wj
+							x += parentWidth - placed.getWidth();
+							y -= placed.getHeight();
+							break;
+						case eUpperLeft: //the first block below bi with xj = xi
+							y -= placed.getHeight();
+							break;
+						default:
+							invariant(false);
+					}
+				} else {	//is right
+					switch(m_cornerOffset.getCorner()) {
+						case eLowerLeft: //the lowest adjacent block on the right with xj = xi + wi
+							x += parentWidth;
+							break;
+						case eLowerRight: //the lowest adjacent block on the left with xj = xi − wj
+							x -= placed.getWidth();
+							break;
+						case eUpperRight: //the highest adjacent block on the left with xj = xi − wj
+							x -= placed.getWidth();
+							y = m_cornerOffset.getY() - placed.getHeight();
+							break;
+						case eUpperLeft: //the highest adjacent block on the right with xj = xi + wi
+							x += parentWidth;
+							y = m_cornerOffset.getY() - placed.getHeight();
+							break;
+						default:
+							invariant(false);
+					}
+				}
             }
-            node.setLowerLeft(x, y);
+            placed.setLowerLeft(x, y);
             m_nodeCnt++;
         }
         private final Corner    m_cornerOffset;

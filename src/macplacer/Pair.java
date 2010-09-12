@@ -25,40 +25,19 @@
  *************************************************************************
  */
 package macplacer;
-import static macplacer.Util.invariant;
-import	java.util.Queue;
-import	java.util.LinkedList;
 
 /**
- * A BinaryTree which overrides add to implement breadth-first (level-order).
+ *
  * @author karl
- * @param <T>
  */
-public class BreadthFirstBinaryTree<T> extends BinaryTree<T> {
-	public BreadthFirstBinaryTree() {}
+public class Pair<T1,T2> {
+    public Pair() {}
 
-	public BreadthFirstBinaryTree(T... eles) {
-		super(eles);
-	}
+    public Pair(T1 e1, T2 e2) {
+        m_ele1 = e1;
+        m_ele2 = e2;
+    }
 
-	@Override
-	public void add(T data) {
-		Node added = null;
-		if (m_fifo.isEmpty()) {
-			added = super.setRoot(data);
-		} else {
-			Node node = m_fifo.peek();
-			invariant(!node.hasRight());
-			if (!node.hasLeft()) {
-				added = node.setLeft(data);
-			} else {
-				added = node.setRight(data);
-				m_fifo.remove();	//pop
-			}
-		}
-		m_fifo.add(added);
-	}
-	
-	private Queue<Node>	m_fifo = new LinkedList<Node>();
+    public T1   m_ele1;
+    public T2   m_ele2;
 }
-

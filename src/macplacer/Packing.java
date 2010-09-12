@@ -45,8 +45,8 @@ public class Packing extends BreadthFirstBinaryTree<Placed> {
 	public double getArea() {
 		DoubleValue area = new DoubleValue();
 		super.preOrder(new BinaryTreeNodeVisitorWithData<Placed,DoubleValue>(area) {
-			public void visit(Placed data) {
-				m_userData.val += data.getInstance().getLibCell().getArea();
+			public void visit(Node<Placed> node) {
+				m_userData.val += node.getData().getInstance().getLibCell().getArea();
 			}
 		});
 		return area.val;
