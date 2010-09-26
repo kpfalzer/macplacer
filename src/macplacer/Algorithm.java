@@ -50,7 +50,7 @@ public abstract class Algorithm {
 	/**
 	 * Create another packing tree by perturbing current one.
 	 */
-	public abstract void iterate();
+	public abstract int iterate();
 
     /**
      * Update placements in floorplan.

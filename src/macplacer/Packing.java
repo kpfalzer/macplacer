@@ -25,12 +25,24 @@
  *************************************************************************
  */
 package macplacer;
+
+import macplacer.BinaryTree.Node;
+
 /**
  * Set of cells to be packed together.
  * @author karl
  */
 public class Packing extends BreadthFirstBinaryTree<Placed> {
 	public Packing() {}
+
+	private Packing(BreadthFirstBinaryTree tree) {
+		super(tree);
+	}
+
+	@Override
+	public Packing rotate(int n) {
+		return new Packing(super.rotate(n));
+	}
 
 	/**
 	 * Create relative packing of unplaced instances.
@@ -50,5 +62,16 @@ public class Packing extends BreadthFirstBinaryTree<Placed> {
 			}
 		});
 		return area.val;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder s = new StringBuilder();
+		super.levelOrder(new BinaryTreeNodeVisitor<Placed>() {
+			public void visit(Node<Placed> node) {
+				s.append(node.getData().toString()).append('\n');
+			}
+		});
+		return s.toString();
 	}
 }

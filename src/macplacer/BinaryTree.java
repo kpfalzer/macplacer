@@ -55,7 +55,7 @@ public class BinaryTree<T> {
 	 * Create tree using add method (to impose any order).
 	 * @param collection of elements.
 	 */
-	public BinaryTree(T... eles) {
+	public void constructor(Iterable<T> eles) {
 		for (T ele : eles) {
 			add(ele);
 		}

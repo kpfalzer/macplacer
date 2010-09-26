@@ -28,6 +28,7 @@ package macplacer;
 import static macplacer.Util.invariant;
 import	java.util.Queue;
 import	java.util.LinkedList;
+import	java.util.List;
 
 /**
  * A BinaryTree which overrides add to implement breadth-first (level-order).
@@ -37,8 +38,13 @@ import	java.util.LinkedList;
 public class BreadthFirstBinaryTree<T> extends BinaryTree<T> {
 	public BreadthFirstBinaryTree() {}
 
-	public BreadthFirstBinaryTree(T... eles) {
-		super(eles);
+	public BreadthFirstBinaryTree(Iterable<T> eles) {
+		super();
+		super.constructor(eles);
+	}
+
+	public BreadthFirstBinaryTree(BreadthFirstBinaryTree tree) {
+		super(tree);
 	}
 
 	@Override
@@ -57,6 +63,20 @@ public class BreadthFirstBinaryTree<T> extends BinaryTree<T> {
 			}
 		}
 		m_fifo.add(added);
+	}
+
+	/**
+	 * Rotate tree.
+	 * @param n number of positions to shift.
+	 * @return permuted tree.
+	 */
+	public BreadthFirstBinaryTree<T> rotate(int n) {
+		List<T> asList = super.asList();
+		for (; n > 0; n--) {
+			T ele = asList.remove(0);
+			asList.add(ele);
+		}
+		return new BreadthFirstBinaryTree<T>(asList);
 	}
 	
 	private Queue<Node>	m_fifo = new LinkedList<Node>();

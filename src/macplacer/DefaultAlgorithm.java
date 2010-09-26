@@ -113,9 +113,35 @@ public class DefaultAlgorithm extends Algorithm {
         m_placedAndUnplaced = m_packing.getPlacedAndUnplaced();
 	}
 
-	public void iterate() {
-		//TODO
-		m_iteration++;
+	public int iterate() {
+		super.m_iteration++;
+		PackingTree previousPackTree = super.m_packing;
+		super.m_packing = new PackingTree();
+		Iterator<Corner> contour = getContours();
+		for (Packing packing : previousPackTree.asList()) {
+			/*TODO:
+			 * rotate a packing tree by 1.
+			 * Perhaps do this random or only 1 tree each iter...
+			 */
+			Packing newPacking = packing.rotate(1);
+			//DEBUG
+			System.out.println("packing:");
+			System.out.println(packing.toString());
+			System.out.println("newPacking:");
+			System.out.println(newPacking.toString());
+			assert(contour.hasNext());
+			Corner corner = contour.next();
+			addPacking(newPacking, corner);
+		}
+		//DEBUG
+		System.out.println("\n==================================\niteration: "+m_iteration);
+		System.out.println(m_packing.toString());
+		
+		return super.m_iteration;
+	}
+
+	private Iterator<Corner> getContours() {
+		return super.m_design.getFplan().getBoundingBox().getContourIterator().iterator();
 	}
 
 	/**
@@ -128,7 +154,7 @@ public class DefaultAlgorithm extends Algorithm {
 		 * counter-clockwise order.
 		 */
 		m_packing = new PackingTree();
-		Iterator<Corner> contour = super.m_design.getFplan().getBoundingBox().getContourIterator().iterator();
+		Iterator<Corner> contour = getContours();
 		for (Cluster cluster : clusters) {
 			assert(contour.hasNext());
 			Corner corner = contour.next();

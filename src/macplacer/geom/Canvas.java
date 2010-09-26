@@ -51,6 +51,10 @@ public class Canvas extends java.awt.Canvas {
 		}
 	}
 
+	public void update(Floorplan fplan) {
+		m_fplan = fplan;
+	}
+
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
@@ -102,7 +106,7 @@ public class Canvas extends java.awt.Canvas {
 		return new Rectangle(new Point(x, y), new macplacer.geom.Dimension(width, height));
 	}
 
-	private final Floorplan	m_fplan;
+	private Floorplan	m_fplan;
 	private final static BasicStroke stLine = new BasicStroke(1.0f);
 	/**
 	 * Box color.

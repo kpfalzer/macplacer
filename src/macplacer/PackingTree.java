@@ -27,6 +27,7 @@
 package macplacer;
 import  java.util.LinkedList;
 import  java.util.List;
+import macplacer.BinaryTree.Node;
 
 /**
  * Collection of "per-corner" locally optimized Packing.
@@ -52,6 +53,21 @@ public class PackingTree extends BinaryTree<Packing> {
         }
         return pnu;
     }
+
+	@Override
+	public String toString() {
+		final StringBuilder s = new StringBuilder();
+		Integer i = 0;
+		super.preOrder(new BinaryTreeNodeVisitorWithData<Packing, Integer>(i) {
+			public void visit(Node<Packing> node) {
+				s.append("\nGroup ").append(m_userData).append('\n')
+						.append(node.getData().toString());
+				m_userData++;
+			}
+		});
+		return s.toString();
+	}
+
 
     public static class PlacedAndUnplaced {
         private PlacedAndUnplaced() {}

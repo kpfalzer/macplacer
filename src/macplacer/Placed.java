@@ -58,6 +58,16 @@ public class Placed extends Rectangle {
 		return m_inst;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+		s.append(m_inst.toString())
+			.append("@(")
+			.append(super.getX()).append(',')
+			.append(super.getY()).append(')');
+		return s.toString();
+	}
+
 	private final Instance	m_inst;
 	private ERotation		m_rotation = ERotation.eNone;
 
