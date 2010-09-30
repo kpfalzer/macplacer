@@ -64,6 +64,14 @@ public class Packing extends BreadthFirstBinaryTree<Placed> {
 		return area.val;
 	}
 
+    public void clearPlacement() {
+        super.preOrder(new BinaryTreeNodeVisitor<Placed>() {
+            public void visit(Node<Placed> node) {
+                node.getData().clearPlacement();
+            }
+        });
+    }
+
 	@Override
 	public String toString() {
 		final StringBuilder s = new StringBuilder();

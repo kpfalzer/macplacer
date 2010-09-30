@@ -25,7 +25,6 @@
  *************************************************************************
  */
 package macplacer;
-
 import macplacer.geom.Dimension;
 
 /**

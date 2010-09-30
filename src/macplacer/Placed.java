@@ -27,6 +27,7 @@
 package macplacer;
 import	macplacer.geom.Point;
 import  macplacer.geom.Rectangle;
+import  macplacer.geom.Dimension;
 
 /**
  * A placed Instance.
@@ -58,10 +59,17 @@ public class Placed extends Rectangle {
 		return m_inst;
 	}
 
+    public void clearPlacement() {
+        super.setLowerLeft(stUnplaced);
+    }
+
 	@Override
 	public String toString() {
 		StringBuilder s = new StringBuilder();
+        Dimension instDm = m_inst.getDimension();
 		s.append(m_inst.toString())
+            .append('[').append(instDm.getWidth()).append(',')
+            .append(instDm.getHeight()).append(']')
 			.append("@(")
 			.append(super.getX()).append(',')
 			.append(super.getY()).append(')');

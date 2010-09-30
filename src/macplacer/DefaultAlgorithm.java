@@ -118,20 +118,27 @@ public class DefaultAlgorithm extends Algorithm {
 		PackingTree previousPackTree = super.m_packing;
 		super.m_packing = new PackingTree();
 		Iterator<Corner> contour = getContours();
+        /*
+         * Iterate over subtrees (Packing objects).
+         * Previous tree is reduced to a list of Packing (trees).
+         */
 		for (Packing packing : previousPackTree.asList()) {
 			/*TODO:
 			 * rotate a packing tree by 1.
 			 * Perhaps do this random or only 1 tree each iter...
 			 */
-			Packing newPacking = packing.rotate(1);
 			//DEBUG
 			System.out.println("packing:");
 			System.out.println(packing.toString());
-			System.out.println("newPacking:");
-			System.out.println(newPacking.toString());
+			Packing newPacking = packing.rotate(1);
+            newPacking.clearPlacement();
 			assert(contour.hasNext());
 			Corner corner = contour.next();
 			addPacking(newPacking, corner);
+            //DEBUG
+            System.out.println("newPacking:");
+			System.out.println(newPacking.toString());
+
 		}
 		//DEBUG
 		System.out.println("\n==================================\niteration: "+m_iteration);
@@ -205,7 +212,7 @@ public class DefaultAlgorithm extends Algorithm {
         PackData data = new PackData(cornerOffset);
         pack.levelOrder(new BinaryTreeNodeVisitorWithData<Placed,PackData>(data) {
             public void visit(BinaryTree.Node<Placed> node) {
-                m_userData.pack(node);
+                m_userData.pack(node);  //assign location
             }
         });
         super.m_packing.add(pack);
