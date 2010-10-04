@@ -131,7 +131,7 @@ public class DefaultAlgorithm extends Algorithm {
 			System.out.println("packing:");
 			System.out.println(packing.toString());
 			Packing newPacking = packing.rotate(1);
-            newPacking.clearPlacement();
+            //newPacking.clearPlacement();    //TODO: this appears to be unnecessary
 			assert(contour.hasNext());
 			Corner corner = contour.next();
 			addPacking(newPacking, corner);

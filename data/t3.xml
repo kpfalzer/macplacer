@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!-- UNITS DISTANCE MICRONS 2000 ;-->
+<!-- DIEAREA ( 0 0 ) ( 3270750 2706400 ) ;-->
+<design name="test3" width="1635.375" height="1353.2">
+<lib>
+<cell name="macro1" npins="100" width="1201.90" height="116.20" rotate="R90"/>
+<cell name="macro2" npins="70" width="631.12" height="57.26" rotate="R90"/>
+<cell name="macro3" npins="50" width="472.08" height="434.42" rotate="R90"/>
+<cell name="macro4" npins="55" width="688.38" height="479.08" rotate="R90"/>
+<cell name="macro5" npins="32" width="293.16" height="122.64" rotate="R90"/>
+<cell name="macro6" npins="47" width="472.08" height="300" rotate="R90"/>
+<cell name="macro7" npins="47" width="400" height="300" rotate="R90"/>
+<cell name="macro8" npins="47" width="500" height="300" rotate="R90"/>
+<cell name="macro9" npins="47" width="200" height="300" rotate="R90"/>
+<cell name="macro10" npins="47" width="100" height="250" rotate="R90"/>
+<cell name="macro11" npins="47" width="200" height="100" rotate="R90"/>
+</lib>
+<components>
+<comp ref="macro1" name="u1/SRAM/u_mem"/>
+<comp name="u2/MEM/SRAM/u_mem" ref="macro2"/>
+<comp name="u3/MEM/SRAM/u_mem" ref="macro3"/>
+<comp name="dram0/RAM/SRAM0/u_mem" ref="macro4"/>
+<comp name="dram0/RAM/SRAM1/u_mem" ref="macro5"/>
+<comp name="dram0/RAM/SRAM2/u_mem" ref="macro6"/>
+<comp name="dram0/RAM/SRAM3/u_mem" ref="macro7"/>
+<comp name="dram1/RAM/SRAM0/u_mem" ref="macro8"/>
+<comp name="dram1/RAM/SRAM1/u_mem" ref="macro9"/>
+<comp name="iram/RAM0/SRAM/u_mem" ref="macro10"/>
+<comp name="iram/RAM1/SRAM/u_mem" ref="macro11"/>
+</components>
+</design>
